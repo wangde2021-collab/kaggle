@@ -1,0 +1,5 @@
+tuning on groups: ['G1_area', 'G5_neigh']
+ridge: already tuned, skip
+elasticnet: already tuned, skip
+huber: best rep0 RMSLE 1.0000 params={'alpha': 0.002428916946974888, 'epsilon': 1.7655000144869413} (8s)
+svr: best rep0 RMSLE 0.2319 params={'C': 0.5400963064603975, 'gamma': 0.03802517542473579, 'epsilon': 0.1327723451460454} (180s)

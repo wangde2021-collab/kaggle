@@ -1,0 +1,37 @@
+=== Baselines (F0, 30 folds) ===
+B_median: RMSLE 0.3996±0.0159  (0s)
+B_ridge: RMSLE 0.1268±0.0320  (10s)
+B_lgbm: RMSLE 0.1284±0.0234  (38s)
+=== Ablation (rep0, 10 folds) ===
+  cum F0 ridge: 0.1265
+  cum F0 cat: 0.1235
+  cum G1_area ridge: 0.1256 d=-0.0009 wins=6/10
+  cum G1_area cat: 0.1227 d=-0.0008 wins=7/10
+  cum G2_bath ridge: 0.1257 d=+0.0001 wins=6/10
+  cum G2_bath cat: 0.1223 d=-0.0003 wins=6/10
+  cum G3_age ridge: 0.1255 d=-0.0002 wins=8/10
+  cum G3_age cat: 0.1222 d=-0.0002 wins=5/10
+  cum G4_inter ridge: 0.1249 d=-0.0006 wins=7/10
+  cum G4_inter cat: 0.1229 d=+0.0008 wins=4/10
+  cum G5_neigh ridge: 0.1268 d=+0.0019 wins=5/10
+  cum G5_neigh cat: 0.1207 d=-0.0022 wins=8/10
+  cum G6_porch ridge: 0.1268 d=-0.0000 wins=5/10
+  cum G6_porch cat: 0.1205 d=-0.0002 wins=6/10
+  cum G7_qual ridge: 0.1267 d=-0.0000 wins=5/10
+  cum G7_qual cat: 0.1209 d=+0.0004 wins=6/10
+--- reverse ablation (remove one group from full) ---
+  -G1_area ridge: 0.1273 d_vs_full=+0.0005 wins=4/10
+  -G1_area cat: 0.1213 d_vs_full=+0.0003 wins=6/10
+  -G2_bath ridge: 0.1266 d_vs_full=-0.0001 wins=4/10
+  -G2_bath cat: 0.1205 d_vs_full=-0.0004 wins=6/10
+  -G3_age ridge: 0.1270 d_vs_full=+0.0002 wins=3/10
+  -G3_age cat: 0.1207 d_vs_full=-0.0002 wins=4/10
+  -G4_inter ridge: 0.1271 d_vs_full=+0.0004 wins=4/10
+  -G4_inter cat: 0.1206 d_vs_full=-0.0004 wins=5/10
+  -G5_neigh ridge: 0.1251 d_vs_full=-0.0016 wins=6/10
+  -G5_neigh cat: 0.1232 d_vs_full=+0.0022 wins=3/10
+  -G6_porch ridge: 0.1267 d_vs_full=+0.0000 wins=5/10
+  -G6_porch cat: 0.1212 d_vs_full=+0.0003 wins=4/10
+  -G7_qual ridge: 0.1268 d_vs_full=+0.0000 wins=5/10
+  -G7_qual cat: 0.1205 d_vs_full=-0.0004 wins=4/10
+F_best = ['G1_area', 'G5_neigh']

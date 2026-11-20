@@ -1,0 +1,29 @@
+=== tuned singles, 30 folds ===
+ridge_t: 0.1245±0.0314 best_iter~None (12s)
+elasticnet_t: 0.1229±0.0296 best_iter~None (23s)
+lgbm_t: 0.1234±0.0200 best_iter~1040.7333333333333 (16s)
+xgb_t: 0.1216±0.0211 best_iter~1088.4333333333334 (32s)
+cat_t: 0.1196±0.0197 best_iter~1838.1666666666667 (488s)
+OOF log-pred correlations:
+[[1.    0.999 0.987 0.989 0.989]
+ [0.999 1.    0.987 0.989 0.989]
+ [0.987 0.987 1.    0.998 0.995]
+ [0.989 0.989 0.998 1.    0.996]
+ [0.989 0.989 0.995 0.996 1.   ]]
+drop ridge (corr>0.995 pair)
+drop lgbm (corr>0.995 pair)
+drop xgb (corr>0.995 pair)
+ensemble members: ['elasticnet', 'cat']
+E1_equal: 0.1177±0.0236
+E2_nnls: 0.1190±0.0238 weights={'elasticnet': 0.268, 'cat': 0.732}
+E1_equal vs cat: d=-0.0019 wins=21/30
+E2_nnls vs cat: d=-0.0006 wins=21/30
+WINNER: cat
+=== full-train refits ===
+ridge: full-train test pred done (0s)
+elasticnet: full-train test pred done (1s)
+lgbm: full-train test pred done (3s)
+xgb: full-train test pred done (4s)
+cat: full-train test pred done (91s)
+submission written: sub_001_cat_cv0.1196.csv median=155864 mean=178042 min=48899 max=534078
+decision note written

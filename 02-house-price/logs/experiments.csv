@@ -1,0 +1,13 @@
+exp_id,date,feature_set,model,params_file,seeds,cv_scheme,rmsle_mean,rmsle_std,rmsle_se,compare_to,d_mean,wins,submitted,public_lb,notes
+B_median,2026-11-20,F0,median,,1,10x3,0.3996,0.0159,0.0029,,,no,,,
+B_ridge,2026-11-20,F0,ridge_default,,1,10x3,0.1268,0.032,0.0058,B_median,-0.2728,30,no,,
+B_lgbm,2026-11-20,F0,lgbm_default,,1,10x3,0.1284,0.0234,0.0043,B_median,-0.2712,30,no,,
+ridge_t,2026-11-20,G1_area+G5_neigh,ridge_tuned,configs/best_params_ridge.json,1,10x3,0.1245,0.0314,0.0057,,,no,,mean_best_iter=,
+elasticnet_t,2026-11-20,G1_area+G5_neigh,elasticnet_tuned,configs/best_params_elasticnet.json,1,10x3,0.1229,0.0296,0.0054,,,no,,mean_best_iter=,
+lgbm_t,2026-11-20,G1_area+G5_neigh,lgbm_tuned,configs/best_params_lgbm.json,1,10x3,0.1234,0.02,0.0036,,,no,,mean_best_iter=1040.7333333333333,
+xgb_t,2026-11-20,G1_area+G5_neigh,xgb_tuned,configs/best_params_xgb.json,1,10x3,0.1216,0.0211,0.0038,,,no,,mean_best_iter=1088.4333333333334,
+cat_t,2026-11-20,G1_area+G5_neigh,cat_tuned,configs/best_params_cat.json,1,10x3,0.1196,0.0197,0.0036,,,no,yes,0.12206,
+E1_equal,2026-11-20,G1_area+G5_neigh,ensemble,,1,10x3,0.1177,0.0236,0.0043,cat,-0.0019,21,no,,"members=elasticnet,cat"
+E2_nnls,2026-11-20,G1_area+G5_neigh,ensemble,,1,10x3,0.119,0.0238,0.0043,cat,-0.0006,21,no,,"weights={""elasticnet"": 0.2682, ""cat"": 0.7318}"
+huber_t,2026-11-20,G1_area+G5_neigh,huber_tuned,,1,10x1(rep0),,,,,,,no,,"FAILED/DROPPED: HuberRegressor lbfgs convergence error (ABNORMAL_TERMINATION_IN_LNSRCH) on every fold/trial; stage2 first run crashed by this exception, rerun all 30 trials failed (best=penalty 1.0). Removed from model pool."
+svr_t,2026-11-20,G1_area+G5_neigh,svr_tuned,,1,10x1(rep0),,,,,,,no,,"FAILED/DROPPED: sanity grid best rep0 RMSLE 0.2319, far worse than ridge 0.1242; removed from pool."

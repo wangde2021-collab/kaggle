@@ -1,0 +1,58 @@
+tuning on groups: ['G1_area', 'G5_neigh']
+ridge: best rep0 RMSLE 0.1242 params={'alpha': 27.13424460940161} (144s)
+elasticnet: best rep0 RMSLE 0.1227 params={'alpha': 0.0008405429899259545, 'l1_ratio': 0.7551854039159641} (1339s)
+[W 2026-11-20 15:10:34,934] Trial 0 failed with parameters: {'alpha': 0.002428916946974888, 'epsilon': 1.7655000144869413} because of the following error: ValueError('HuberRegressor convergence failed: l-BFGS-b solver terminated with ABNORMAL_TERMINATION_IN_LNSRCH').
+Traceback (most recent call last):
+  File "/home/hatch/.local/lib/python3.12/site-packages/optuna/study/_optimize.py", line 210, in _run_trial
+    value_or_values = func(trial)
+                      ^^^^^^^^^^^
+  File "/home/hatch/workspace/kaggle-data/02-house-price/src/stage2_tune.py", line 25, in obj
+    res = CV.run_cv(est_fn, train, folds, reps=1)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hatch/workspace/kaggle-data/02-house-price/src/cv.py", line 69, in run_cv
+    est.fit(Xtr[keep], ytr[keep])
+  File "/home/hatch/.local/lib/python3.12/site-packages/sklearn/base.py", line 1403, in wrapper
+    return fit_method(estimator, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hatch/.local/lib/python3.12/site-packages/sklearn/pipeline.py", line 645, in fit
+    self._final_estimator.fit(Xt, y, **last_step_params["fit"])
+  File "/home/hatch/.local/lib/python3.12/site-packages/sklearn/base.py", line 1403, in wrapper
+    return fit_method(estimator, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hatch/.local/lib/python3.12/site-packages/sklearn/linear_model/_huber.py", line 344, in fit
+    raise ValueError(
+ValueError: HuberRegressor convergence failed: l-BFGS-b solver terminated with ABNORMAL_TERMINATION_IN_LNSRCH
+[W 2026-11-20 15:10:34,975] Trial 0 failed with value None.
+Traceback (most recent call last):
+  File "/home/hatch/workspace/kaggle-data/02-house-price/src/stage2_tune.py", line 71, in <module>
+    run_study("huber", mk_huber, 30)
+  File "/home/hatch/workspace/kaggle-data/02-house-price/src/stage2_tune.py", line 34, in run_study
+    study.optimize(objective_factory(make_fn), n_trials=n_trials,
+  File "/home/hatch/.local/lib/python3.12/site-packages/optuna/study/study.py", line 503, in optimize
+    _optimize(
+  File "/home/hatch/.local/lib/python3.12/site-packages/optuna/study/_optimize.py", line 68, in _optimize
+    _optimize_sequential(
+  File "/home/hatch/.local/lib/python3.12/site-packages/optuna/study/_optimize.py", line 169, in _optimize_sequential
+    frozen_trial_id = _run_trial(study, func, catch)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hatch/.local/lib/python3.12/site-packages/optuna/study/_optimize.py", line 267, in _run_trial
+    raise func_err
+  File "/home/hatch/.local/lib/python3.12/site-packages/optuna/study/_optimize.py", line 210, in _run_trial
+    value_or_values = func(trial)
+                      ^^^^^^^^^^^
+  File "/home/hatch/workspace/kaggle-data/02-house-price/src/stage2_tune.py", line 25, in obj
+    res = CV.run_cv(est_fn, train, folds, reps=1)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hatch/workspace/kaggle-data/02-house-price/src/cv.py", line 69, in run_cv
+    est.fit(Xtr[keep], ytr[keep])
+  File "/home/hatch/.local/lib/python3.12/site-packages/sklearn/base.py", line 1403, in wrapper
+    return fit_method(estimator, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hatch/.local/lib/python3.12/site-packages/sklearn/pipeline.py", line 645, in fit
+    self._final_estimator.fit(Xt, y, **last_step_params["fit"])
+  File "/home/hatch/.local/lib/python3.12/site-packages/sklearn/base.py", line 1403, in wrapper
+    return fit_method(estimator, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hatch/.local/lib/python3.12/site-packages/sklearn/linear_model/_huber.py", line 344, in fit
+    raise ValueError(
+ValueError: HuberRegressor convergence failed: l-BFGS-b solver terminated with ABNORMAL_TERMINATION_IN_LNSRCH

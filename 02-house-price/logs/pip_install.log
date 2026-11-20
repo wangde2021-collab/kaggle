@@ -1,0 +1,46 @@
+Collecting catboost
+  Using cached catboost-1.2.10-cp312-cp312-manylinux2014_x86_64.whl.metadata (1.2 kB)
+Collecting optuna
+  Using cached optuna-5.1.0-py3-none-any.whl.metadata (15 kB)
+Collecting graphviz (from catboost)
+  Downloading graphviz-0.21-py3-none-any.whl.metadata (12 kB)
+Requirement already satisfied: matplotlib in /usr/lib/python3/dist-packages (from catboost) (3.6.3)
+Requirement already satisfied: numpy<3.0,>=1.16.0 in /usr/lib/python3/dist-packages (from catboost) (1.26.4)
+Requirement already satisfied: pandas<4.0,>=0.24 in /usr/lib/python3/dist-packages (from catboost) (2.1.4+dfsg)
+Requirement already satisfied: scipy in /usr/lib/python3/dist-packages (from catboost) (1.11.4)
+Requirement already satisfied: plotly in /usr/lib/python3/dist-packages (from catboost) (5.15.0)
+Requirement already satisfied: six in /usr/lib/python3/dist-packages (from catboost) (1.16.0)
+Collecting alembic>=1.5.0 (from optuna)
+  Using cached alembic-1.20.1-py3-none-any.whl.metadata (7.3 kB)
+Collecting colorlog (from optuna)
+  Using cached colorlog-6.12.0-py3-none-any.whl.metadata (11 kB)
+Requirement already satisfied: packaging>=20.0 in /usr/lib/python3/dist-packages (from optuna) (24.0)
+Collecting sqlalchemy>=1.4.2 (from optuna)
+  Using cached sqlalchemy-2.1.9-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (9.7 kB)
+Requirement already satisfied: tqdm in /home/hatch/.local/lib/python3.12/site-packages (from optuna) (4.70.1)
+Requirement already satisfied: PyYAML in /usr/lib/python3/dist-packages (from optuna) (6.0.1)
+Collecting Mako (from alembic>=1.5.0->optuna)
+  Using cached mako-1.4.3-py3-none-any.whl.metadata (2.9 kB)
+Collecting typing-extensions>=4.12 (from alembic>=1.5.0->optuna)
+  Using cached typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
+Collecting MarkupSafe>=2.0 (from Mako->alembic>=1.5.0->optuna)
+  Using cached markupsafe-3.0.4-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.7 kB)
+Using cached catboost-1.2.10-cp312-cp312-manylinux2014_x86_64.whl (97.1 MB)
+Using cached optuna-5.1.0-py3-none-any.whl (442 kB)
+Using cached alembic-1.20.1-py3-none-any.whl (270 kB)
+Using cached sqlalchemy-2.1.9-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (4.7 MB)
+Using cached colorlog-6.12.0-py3-none-any.whl (12 kB)
+Downloading graphviz-0.21-py3-none-any.whl (47 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 47.3/47.3 kB 791.6 kB/s eta 0:00:00
+Using cached typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+Using cached mako-1.4.3-py3-none-any.whl (80 kB)
+Using cached markupsafe-3.0.4-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (22 kB)
+Installing collected packages: typing-extensions, MarkupSafe, graphviz, colorlog, sqlalchemy, Mako, catboost, alembic, optuna
+  WARNING: The script mako-render is installed in '/home/hatch/.local/bin' which is not on PATH.
+  Consider adding this directory to PATH or, if you prefer to suppress this warning, use --no-warn-script-location.
+  WARNING: The script alembic is installed in '/home/hatch/.local/bin' which is not on PATH.
+  Consider adding this directory to PATH or, if you prefer to suppress this warning, use --no-warn-script-location.
+  WARNING: The script optuna is installed in '/home/hatch/.local/bin' which is not on PATH.
+  Consider adding this directory to PATH or, if you prefer to suppress this warning, use --no-warn-script-location.
+Successfully installed Mako-1.4.3 MarkupSafe-3.0.4 alembic-1.20.1 catboost-1.2.10 colorlog-6.12.0 graphviz-0.21 optuna-5.1.0 sqlalchemy-2.1.9 typing-extensions-4.16.0
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
