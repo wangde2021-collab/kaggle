@@ -1,0 +1,4 @@
+seq,exp_id,cv_mean,cv_std,submitted,public_lb,submit_time,note
+0,prev_softvote_old,0.816,,no,,,旧单次5折软投票版，替换前存档；0.8160为旧单次5折分数，不与新CV比较
+1,E3_weighted,0.8413,0.0235,yes,0.76315,2026-11-19,加权软投票 lgbm0.816/svc0.155/knn0.029，F_best，lgbm 5种子全量重训 n=133；已提交，编号 58565101，状态 COMPLETE，Public LB 0.76315
+2,B1_gender,0.7868,,yes,0.76555,2026-11-19,LB 锚点：性别规则 女=1 男=0，预测生还 152 人；已提交，编号 58565946，状态 COMPLETE，Public LB 0.76555，比 E3 高 1 人

@@ -1,0 +1,102 @@
+调参 lr: 已有 best_params，跳过调参
+调参 svc: 已有 best_params，跳过调参
+调参 knn: 已有 best_params，跳过调参
+调参 rf: 已有 best_params，跳过调参
+调参 et: 已有 best_params，跳过调参
+调参 xgb: 已有 best_params，跳过调参
+调参 lgbm: 已有 best_params，跳过调参
+[W 2026-11-19 14:20:51,999] Trial 0 failed with parameters: {'iterations': 500, 'learning_rate': 0.08927180304353628, 'depth': 7, 'l2_leaf_reg': 3.968793330444372, 'min_data_in_leaf': 4} because of the following error: CatBoostError('Invalid type for cat_feature[non-default value idx=0,feature_idx=5]=1.0 : cat_features must be integer or string, real number values and NaN values should be converted to string.').
+Traceback (most recent call last):
+  File "_catboost.pyx", line 2687, in _catboost.get_cat_factor_bytes_representation
+  File "_catboost.pyx", line 2180, in _catboost.get_id_object_bytes_string_representation
+_catboost.CatBoostError: bad object for id: 1.0
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/dist-packages/optuna/study/_optimize.py", line 210, in _run_trial
+    value_or_values = func(trial)
+                      ^^^^^^^^^^^
+  File "/home/hatch/workspace/kaggle-data/titanic/scripts_stage5.py", line 105, in objective
+    acc, ll = rep0_score(model, params)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hatch/workspace/kaggle-data/titanic/scripts_stage5.py", line 43, in rep0_score
+    p_va, _, _ = _fit_predict_fold(
+                 ^^^^^^^^^^^^^^^^^^
+  File "/home/hatch/workspace/kaggle-data/titanic/src/cv.py", line 91, in _fit_predict_fold
+    model.fit(Xtr_t, y_tr, **fit_kw)
+  File "/usr/local/lib/python3.12/dist-packages/catboost/core.py", line 5547, in fit
+    self._fit(X, y, cat_features, text_features, embedding_features, None, graph, sample_weight, None, None, None, None, baseline, use_best_model,
+  File "/usr/local/lib/python3.12/dist-packages/catboost/core.py", line 2701, in _fit
+    train_params = self._prepare_train_params(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/catboost/core.py", line 2581, in _prepare_train_params
+    train_pool = _build_train_pool(X, y, cat_features, text_features, embedding_features, pairs, graph,
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/catboost/core.py", line 1540, in _build_train_pool
+    train_pool = Pool(X, y, cat_features=cat_features, text_features=text_features, embedding_features=embedding_features, pairs=pairs, graph=graph, weight=sample_weight, group_id=group_id,
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/catboost/core.py", line 863, in __init__
+    self._init(data, label, cat_features, text_features, embedding_features, embedding_features_data, pairs, graph, weight,
+  File "/usr/local/lib/python3.12/dist-packages/catboost/core.py", line 1518, in _init
+    self._init_pool(data, label, cat_features, text_features, embedding_features, embedding_features_data, pairs, graph, weight,
+  File "_catboost.pyx", line 4695, in _catboost._PoolBase._init_pool
+  File "_catboost.pyx", line 4771, in _catboost._PoolBase._init_pool
+  File "_catboost.pyx", line 4666, in _catboost._PoolBase._init_objects_order_layout_pool
+  File "_catboost.pyx", line 4101, in _catboost._set_data
+  File "_catboost.pyx", line 4054, in _catboost._set_data_from_generic_matrix
+  File "_catboost.pyx", line 2694, in _catboost.get_cat_factor_bytes_representation
+_catboost.CatBoostError: Invalid type for cat_feature[non-default value idx=0,feature_idx=5]=1.0 : cat_features must be integer or string, real number values and NaN values should be converted to string.
+[W 2026-11-19 14:20:52,009] Trial 0 failed with value None.
+Traceback (most recent call last):
+  File "_catboost.pyx", line 2687, in _catboost.get_cat_factor_bytes_representation
+  File "_catboost.pyx", line 2180, in _catboost.get_id_object_bytes_string_representation
+_catboost.CatBoostError: bad object for id: 1.0
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/hatch/workspace/kaggle-data/titanic/scripts_stage5.py", line 111, in <module>
+    study.optimize(objective, n_trials=TRIALS[model], show_progress_bar=False)
+  File "/usr/local/lib/python3.12/dist-packages/optuna/study/study.py", line 503, in optimize
+    _optimize(
+  File "/usr/local/lib/python3.12/dist-packages/optuna/study/_optimize.py", line 68, in _optimize
+    _optimize_sequential(
+  File "/usr/local/lib/python3.12/dist-packages/optuna/study/_optimize.py", line 169, in _optimize_sequential
+    frozen_trial_id = _run_trial(study, func, catch)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/optuna/study/_optimize.py", line 267, in _run_trial
+    raise func_err
+  File "/usr/local/lib/python3.12/dist-packages/optuna/study/_optimize.py", line 210, in _run_trial
+    value_or_values = func(trial)
+                      ^^^^^^^^^^^
+  File "/home/hatch/workspace/kaggle-data/titanic/scripts_stage5.py", line 105, in objective
+    acc, ll = rep0_score(model, params)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hatch/workspace/kaggle-data/titanic/scripts_stage5.py", line 43, in rep0_score
+    p_va, _, _ = _fit_predict_fold(
+                 ^^^^^^^^^^^^^^^^^^
+  File "/home/hatch/workspace/kaggle-data/titanic/src/cv.py", line 91, in _fit_predict_fold
+    model.fit(Xtr_t, y_tr, **fit_kw)
+  File "/usr/local/lib/python3.12/dist-packages/catboost/core.py", line 5547, in fit
+    self._fit(X, y, cat_features, text_features, embedding_features, None, graph, sample_weight, None, None, None, None, baseline, use_best_model,
+  File "/usr/local/lib/python3.12/dist-packages/catboost/core.py", line 2701, in _fit
+    train_params = self._prepare_train_params(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/catboost/core.py", line 2581, in _prepare_train_params
+    train_pool = _build_train_pool(X, y, cat_features, text_features, embedding_features, pairs, graph,
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/catboost/core.py", line 1540, in _build_train_pool
+    train_pool = Pool(X, y, cat_features=cat_features, text_features=text_features, embedding_features=embedding_features, pairs=pairs, graph=graph, weight=sample_weight, group_id=group_id,
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/catboost/core.py", line 863, in __init__
+    self._init(data, label, cat_features, text_features, embedding_features, embedding_features_data, pairs, graph, weight,
+  File "/usr/local/lib/python3.12/dist-packages/catboost/core.py", line 1518, in _init
+    self._init_pool(data, label, cat_features, text_features, embedding_features, embedding_features_data, pairs, graph, weight,
+  File "_catboost.pyx", line 4695, in _catboost._PoolBase._init_pool
+  File "_catboost.pyx", line 4771, in _catboost._PoolBase._init_pool
+  File "_catboost.pyx", line 4666, in _catboost._PoolBase._init_objects_order_layout_pool
+  File "_catboost.pyx", line 4101, in _catboost._set_data
+  File "_catboost.pyx", line 4054, in _catboost._set_data_from_generic_matrix
+  File "_catboost.pyx", line 2694, in _catboost.get_cat_factor_bytes_representation
+_catboost.CatBoostError: Invalid type for cat_feature[non-default value idx=0,feature_idx=5]=1.0 : cat_features must be integer or string, real number values and NaN values should be converted to string.
