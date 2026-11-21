@@ -1,0 +1,10 @@
+numpy==1.26.4
+pandas==2.1.4
+scipy==1.11.4
+scikit-learn==1.9.1
+pyarrow==15.0.0
+statsmodels==0.15.0
+lightgbm==4.7.0
+matplotlib==3.6.3
+joblib==1.6.0
+# Phase 2/3 另行评估后追加（polars / pymc / interpretML 等，须与 numpy 1.26.4 兼容才装）
