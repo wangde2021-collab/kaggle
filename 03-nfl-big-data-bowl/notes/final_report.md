@@ -131,8 +131,9 @@
 
 ## 6. GitHub 同步状态
 
-- 本趟尝试同步：本地仓库 `~/workspace/kaggle-data`（remote `git@github.com:wangde2021-collab/kaggle.git`，main 分支，最新提交 a2ca1d9 为 Titanic），`03-nfl-big-data-bowl/` 全部文件仍未跟踪（0 个已跟踪文件）。直接 `git ls-remote` 失败：沙箱代理重置了到 github.com:22 的 SSH 连接（`Connection reset by peer`，经 198.19.0.1:3128），git 直推此路不通；`gh` CLI 未登录。
-- **本次未完成推送。** 下次同步请走 GitHub 连接器的 `push-files`（此前 Titanic 推送即用此路；第 1 轮报告里该路曾两次被云端服务重启打断，写操作中断后先查远端再重试）。待推内容：`03-nfl-big-data-bowl/src/*.py`（8 个，约 200KB，含本轮冻结版 model_phase3.py）+ `notes/*.md` + `README.md` + `requirements.txt`；**绝不推 data/**（2.7GB 原始 CSV 与 parquet）。同步记录文件 `~/workspace/kaggle-data.muse-github-snapshot-sync.json` 未推进（按规矩，确认远端生效后才推进）。
+- **已同步（2026-11-22 约 17:35 CST，本趟内完成并验证）。** 经 GitHub 连接器 `push-files` 推送 31 个文件（`03-nfl-big-data-bowl/src/*.py` 8 个 + `notes/*.md` 21 个 + `README.md` + `requirements.txt`，约 570KB；**不含 data/**），新提交 `387c0373950ffa66b5267c3f946b91020bcb43af`，远端 main 分支 head 已核对一致。同步记录 `~/workspace/kaggle-data.muse-github-snapshot-sync.json` 已推进（第 4 条记录）。
+- 同步前核对：远端已有 `03-nfl-big-data-bowl/`（2026-11-21 04:46 提交 a9a6c8e7，第 1 轮修复版，18 个文件）；本次为更新其中 18 个 + 新增 13 个（第 2–5 轮笔记与结果文件），无删除；自 a9a6c8e7 后无其他人动过该目录（远端 head 其间只多了一个无关的 Telco 提交）。
+- 直接 `git` 直推此路不通：沙箱代理重置了到 github.com:22 的 SSH 连接（`Connection reset by peer`，经 198.19.0.1:3128），`gh` CLI 未登录；以后同步继续走连接器 `push-files`。
 
 ## 7. 离能提交还差什么
 
