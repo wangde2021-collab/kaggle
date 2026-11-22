@@ -1,0 +1,193 @@
+seed=42 n_repeats=10 n_perm=1000 n_boot=2000 within_year=True
+drill: fold-clean drill normalization from skill_events.parquet (28 stable drills, 4238 player-drill rows); WITHIN-YEAR harmonization ON
+
+== Y1_hurdle_stage1 ==
+  M0a: mean=0.8631 std=0.0033 alpha_med=1.9307
+  M0b_stopwatch: mean=0.5968 std=0.0084 alpha_med=0.0283
+  M0c_ngs: mean=0.8082 std=0.0034 alpha_med=1.0000
+  M0b: mean=0.8022 std=0.0045 alpha_med=0.2683
+  M0all: mean=0.8640 std=0.0047 alpha_med=0.1389
+  M1b: mean=0.7873 std=0.0061 alpha_med=0.1389
+  M1_track_only: mean=0.5688 std=0.0081 alpha_med=0.0100
+  M1a: mean=0.8651 std=0.0028 alpha_med=0.0100 base_alpha=1.9307
+  M1: mean=0.8641 std=0.0035 alpha_med=0.0100 base_alpha=1.9307
+  M1full: mean=0.8643 std=0.0035 alpha_med=0.0100 base_alpha=1.9307
+  M1_over_stopwatch: mean=0.5724 std=0.0088 alpha_med=0.0100 base_alpha=0.0283
+  M1_over_all: mean=0.8600 std=0.0039 alpha_med=0.0100 base_alpha=0.1389
+  delta_M1_vs_M0a: mean=0.0009 CI95=[-0.0079, 0.0065]
+  delta_M1b_vs_M0b: mean=-0.0150 CI95=[-0.0281, 0.0023]
+  delta_M1a_vs_M0a: mean=0.0020 CI95=[-0.0078, 0.0063]
+  delta_M1_over_stopwatch_vs_M0b_stopwatch: mean=-0.0244 CI95=[-0.0643, 0.0129]
+  delta_M1_track_only_vs_M0b_stopwatch: mean=-0.0279 CI95=[-0.0763, 0.0150]
+  delta_M1_over_all_vs_M0all: mean=-0.0041 CI95=[-0.0106, 0.0032]
+  permutation: obs=0.0015 p_perm=0.0599 null_mean=-0.0009 null_sd=0.0016
+
+== Y1_stage2_logASR ==
+  M0a: mean=0.6611 std=0.0078 alpha_med=14.6780
+  M0b_stopwatch: mean=0.4681 std=0.0126 alpha_med=31.6228
+  M0c_ngs: mean=0.5986 std=0.0186 alpha_med=10.0000
+  M0b: mean=0.5862 std=0.0175 alpha_med=21.5443
+  M0all: mean=0.6559 std=0.0101 alpha_med=31.6228
+  M1b: mean=0.5483 std=0.0261 alpha_med=31.6228
+  M1_track_only: mean=0.4245 std=0.0374 alpha_med=46.4159
+  M1a: mean=0.6605 std=0.0077 alpha_med=100000.0000 base_alpha=14.6780
+  M1: mean=0.6607 std=0.0077 alpha_med=100000.0000 base_alpha=14.6780
+  M1full: mean=0.6609 std=0.0077 alpha_med=100000.0000 base_alpha=14.6780
+  M1_over_stopwatch: mean=0.4669 std=0.0119 alpha_med=14677.9927 base_alpha=31.6228
+  M1_over_all: mean=0.6559 std=0.0101 alpha_med=100000.0000 base_alpha=31.6228
+  delta_M1_vs_M0a: mean=-0.0005 CI95=[-0.0011, 0.0003]
+  delta_M1b_vs_M0b: mean=-0.0378 CI95=[-0.0576, 0.0052]
+  delta_M1a_vs_M0a: mean=-0.0007 CI95=[-0.0017, 0.0005]
+  delta_M1_over_stopwatch_vs_M0b_stopwatch: mean=-0.0013 CI95=[-0.0056, 0.0042]
+  delta_M1_track_only_vs_M0b_stopwatch: mean=-0.0437 CI95=[-0.1052, 0.0375]
+  delta_M1_over_all_vs_M0all: mean=-0.0000 CI95=[-0.0003, 0.0003]
+  permutation: obs=0.0000 p_perm=0.1168 null_mean=-0.0000 null_sd=0.0000
+
+== Y2_quality ==
+  M0a: mean=0.1009 std=0.0275 alpha_med=146.7799
+  M0b_stopwatch: mean=-0.0016 std=0.0356 alpha_med=1000.0000
+  M0c_ngs: mean=0.1984 std=0.0256 alpha_med=46.4159
+  M0b: mean=0.1756 std=0.0279 alpha_med=100.0000
+  M0all: mean=0.1829 std=0.0286 alpha_med=215.4435
+  M1b: mean=0.1587 std=0.0210 alpha_med=464.1589
+  M1_track_only: mean=0.0902 std=0.0295 alpha_med=681.2921
+  M1a: mean=0.1403 std=0.0271 alpha_med=1333.5214 base_alpha=146.7799
+  M1: mean=0.1335 std=0.0290 alpha_med=2154.4347 base_alpha=146.7799
+  M1full: mean=0.1279 std=0.0312 alpha_med=2154.4347 base_alpha=146.7799
+  M1_over_stopwatch: mean=0.0755 std=0.0358 alpha_med=1333.5214 base_alpha=1000.0000
+  M1_over_all: mean=0.1823 std=0.0317 alpha_med=4552.0569 base_alpha=215.4435
+  delta_M1_vs_M0a: mean=0.0326 CI95=[-0.0114, 0.0819]
+  delta_M1b_vs_M0b: mean=-0.0169 CI95=[-0.0910, 0.0646]
+  delta_M1a_vs_M0a: mean=0.0394 CI95=[-0.0097, 0.0951]
+  delta_M1_over_stopwatch_vs_M0b_stopwatch: mean=0.0771 CI95=[0.0122, 0.1545]
+  delta_M1_track_only_vs_M0b_stopwatch: mean=0.0918 CI95=[-0.0076, 0.2217]
+  delta_M1_over_all_vs_M0all: mean=-0.0006 CI95=[-0.0169, 0.0158]
+  permutation: obs=0.0415 p_perm=0.0030 null_mean=-0.0051 null_sd=0.0090
+
+Y2 r2_M1=0.0175 r2_M0a=0.0098
+
+== adversarial_validation ==
+  draft_year_macro_auc_ALL: mean=0.4922 std=0.0230
+  draft_year_macro_auc_FORTY_ONLY: mean=0.4924 std=0.0219
+  draft_year_macro_auc_SKILL_ONLY: mean=0.4892 std=0.0278
+  draft_year_macro_auc_STATIC_ONLY: mean=0.4879 std=0.0331
+  forty_s_peak 2023: all=10.4194 (n=134) WR=11.0334 (n=30)
+  forty_s_peak 2024: all=10.3680 (n=145) WR=11.0701 (n=26)
+  forty_s_peak 2025: all=10.3933 (n=126) WR=11.0788 (n=30)
+
+== temporal ==
+  Y1_year1_hurdle: {'M0a': {'metric_mean': 0.8437630720964566, 'metric_std': 0.004978658514230226, 'alpha_median': 0.517947467923121}, 'M0b_stopwatch': {'metric_mean': 0.576035002406299, 'metric_std': 0.0116549861879096, 'alpha_median': 0.01}, 'M0c_ngs': {'metric_mean': 0.7824226439468503, 'metric_std': 0.004826606858023024, 'alpha_median': 0.3931085237255467}, 'M0b': {'metric_mean': 0.7759304256889764, 'metric_std': 0.00597426259661408, 'alpha_median': 0.3931085237255467}, 'M0all': {'metric_mean': 0.8460691437007875, 'metric_std': 0.0044857636090479885, 'alpha_median': 0.13894954943731375}, 'M1b': {'metric_mean': 0.7510088582677165, 'metric_std': 0.007222303809485075, 'alpha_median': 0.07196856730011521}, 'M1_track_only': {'metric_mean': 0.5326510211614173, 'metric_std': 0.012146508860836736, 'alpha_median': 0.01}, 'M1a': {'metric_mean': 0.8421998031496063, 'metric_std': 0.004264686545189006, 'alpha_median': 0.01, 'base_alpha_median': 0.517947467923121}, 'M1': {'metric_mean': 0.842658095472441, 'metric_std': 0.004000285896482624, 'alpha_median': 0.01, 'base_alpha_median': 0.517947467923121}, 'M1full': {'metric_mean': 0.8426257997047244, 'metric_std': 0.003960053584332212, 'alpha_median': 0.01, 'base_alpha_median': 0.517947467923121}, 'M1_over_stopwatch': {'metric_mean': 0.5312192421259843, 'metric_std': 0.012248741655111209, 'alpha_median': 0.01, 'base_alpha_median': 0.01}, 'M1_over_all': {'metric_mean': 0.8387456938976378, 'metric_std': 0.0029760305485361325, 'alpha_median': 0.01, 'base_alpha_median': 0.13894954943731375}, 'delta_M1_vs_M0a': {'mean': -0.0011049766240156522, 'ci95': [-0.008658368078689038, 0.006233397751595846]}, 'delta_M1b_vs_M0b': {'mean': -0.02492156742125995, 'ci95': [-0.03684726360502341, -0.009734881602281774]}, 'delta_M1a_vs_M0a': {'mean': -0.001563268946850327, 'ci95': [-0.008723491232392236, 0.004240405623769644]}, 'delta_M1_over_stopwatch_vs_M0b_stopwatch': {'mean': -0.04481576033464563, 'ci95': [-0.08068311222499948, -0.0075192800436646775]}, 'delta_M1_track_only_vs_M0b_stopwatch': {'mean': -0.043383981299212615, 'ci95': [-0.09174026909253576, 0.003709712315508711]}, 'delta_M1_over_all_vs_M0all': {'mean': -0.007323449803149695, 'ci95': [-0.013146536768214746, -0.001217142500778812]}, 'permutation': {'obs_delta': -0.005654322506561764, 'p_perm': 0.6856287425149701, 'null_mean': -0.004973277288114872, 'null_sd': 0.0017941278970940843}}
+  Y1_year1_logsnaps: {'M0a': {'metric_mean': 0.5793686220197356, 'metric_std': 0.004244033425905881, 'alpha_median': 18.111169788269756}, 'M0b_stopwatch': {'metric_mean': 0.22304341490052743, 'metric_std': 0.01692710044480082, 'alpha_median': 100.0}, 'M0c_ngs': {'metric_mean': 0.5176404833167987, 'metric_std': 0.006219841958140355, 'alpha_median': 6.812920690579611}, 'M0b': {'metric_mean': 0.5161302662466927, 'metric_std': 0.004898877478572628, 'alpha_median': 18.111169788269756}, 'M0all': {'metric_mean': 0.5910474069272897, 'metric_std': 0.004808925943484054, 'alpha_median': 46.41588833612777}, 'M1b': {'metric_mean': 0.4903627204429696, 'metric_std': 0.01029065960680986, 'alpha_median': 46.41588833612777}, 'M1_track_only': {'metric_mean': 0.20772773081269946, 'metric_std': 0.017747800992277154, 'alpha_median': 146.7799267622069}, 'M1a': {'metric_mean': 0.580742896872817, 'metric_std': 0.00601225700278285, 'alpha_median': 1743.9780610976045, 'base_alpha_median': 18.111169788269756}, 'M1': {'metric_mean': 0.5806602933493605, 'metric_std': 0.005744615274370987, 'alpha_median': 2154.4346900318847, 'base_alpha_median': 18.111169788269756}, 'M1full': {'metric_mean': 0.5805958743028, 'metric_std': 0.00577039629295833, 'alpha_median': 2154.4346900318847, 'base_alpha_median': 18.111169788269756}, 'M1_over_stopwatch': {'metric_mean': 0.22155631851937801, 'metric_std': 0.01502019141074012, 'alpha_median': 3480.700588428413, 'base_alpha_median': 100.0}, 'M1_over_all': {'metric_mean': 0.5902306043062746, 'metric_std': 0.005152575863561318, 'alpha_median': 7354.294504210182, 'base_alpha_median': 46.41588833612777}, 'delta_M1_vs_M0a': {'mean': 0.0012916713296249327, 'ci95': [-0.004678272350585644, 0.00950703864655956]}, 'delta_M1b_vs_M0b': {'mean': -0.02576754580372309, 'ci95': [-0.04809140280039617, 0.01015940125163804]}, 'delta_M1a_vs_M0a': {'mean': 0.001374274853081392, 'ci95': [-0.004829320978506938, 0.009812282430652994]}, 'delta_M1_over_stopwatch_vs_M0b_stopwatch': {'mean': -0.001487096381149411, 'ci95': [-0.014978147688301621, 0.015885295442604974]}, 'delta_M1_track_only_vs_M0b_stopwatch': {'mean': -0.015315684087827963, 'ci95': [-0.07297333457631314, 0.06441939235269632]}, 'delta_M1_over_all_vs_M0all': {'mean': -0.0008168026210151336, 'ci95': [-0.0030696973772733364, 0.0022081449360246944]}, 'permutation': {'obs_delta': 0.005806992764221734, 'p_perm': 0.0029940119760479044, 'null_mean': -0.001610743054373859, 'null_sd': 0.0014947143053219382}}
+  temporal/Y1_year1_hurdle_M0a: {'n_train': 337, 'n_test': 173, 'metric': 0.8756019261637239}
+  temporal/Y1_year1_hurdle_M1: {'n_train': 337, 'n_test': 173, 'metric': 0.8670411985018726}
+  temporal/Y1_year1_logsnaps_M0a: {'n_train': 253, 'n_test': 125, 'metric': 0.629337524994706}
+  temporal/Y1_year1_logsnaps_M1: {'n_train': 253, 'n_test': 125, 'metric': 0.6241354815808838}
+  temporal/LOCO_Y2/Y2_test_2023_M0a: {'n_test': 112, 'r': 0.19713610636162895}
+  temporal/LOCO_Y2/Y2_test_2023_M1: {'n_test': 112, 'r': 0.18306095853637594}
+  temporal/LOCO_Y2/Y2_test_2024_M0a: {'n_test': 104, 'r': 0.09381314854689464}
+  temporal/LOCO_Y2/Y2_test_2024_M1: {'n_test': 104, 'r': 0.13149972876264582}
+  temporal/LOCO_Y2/Y2_test_2025_M0a: {'n_test': 83, 'r': 0.010633263245448521}
+  temporal/LOCO_Y2/Y2_test_2025_M1: {'n_test': 83, 'r': 0.05129599119990471}
+
+== fdr_Y2 (q<0.05) ==
+  skill_s_peak_z_mean: beta=0.1562 p=0.00031644571937076396 q=0.0044
+  fdr_Y2_full rows: 23
+
+== draft_pricing (key rows) ==
+  skill_s_peak_z_mean: beta=0.1529 p=0.00025447082640536555 q=0.0007
+  v_max_best: beta=0.1889 p=3.0501177964601977e-06 q=0.0000
+  forty_s_peak: beta=0.2252 p=3.4783765489532797e-09 q=0.0000
+  neg_forty: beta=0.2710 p=2.9233703278213585e-12 q=0.0000
+  vertical: beta=0.2322 p=2.6260883628377404e-09 q=0.0000
+  broad_jump: beta=0.2215 p=3.3686391707895536e-07 q=0.0000
+
+== robustness_skill_s_peak_ladder ==
+  step1: controls=log_pick subset=None n=299 beta=0.1562 p=0.00031644571937076396
+  step2: controls=log_pick+forty subset=None n=253 beta=0.0944 p=0.07739338781622217
+  step3: controls=log_pick+ngs_final_score subset=None n=298 beta=0.1378 p=0.0026775791780065347
+  step4: controls=log_pick+forty+ngs_final_score subset=None n=252 beta=0.0926 p=0.0886269512288863
+  step5: controls=log_pick subset=forty.notna() n=253 beta=0.1361 p=0.003016828496309378
+
+== Y2_sensitivity ==
+  n_plays_100: n=286 oof_r_mean=0.1768
+  n_plays_150: n=261 oof_r_mean=0.1116
+
+== M3_lightgbm == {'Y2_r_mean': 0.14572077116356097, 'Y1_hurdle_auc_mean': 0.8462049981442533}
+== M2_mediation ==
+  decel: n=299 indirect=-0.0050 CI95=[-0.0335, 0.0237] pct=-0.0332
+  burst_1s: n=299 indirect=0.0117 CI95=[-0.0158, 0.0441] pct=0.0779
+  ktr_speed_corr_raw=0.8303 partial_r=0.3058 p=2.4702473873095804e-08 n=319 mean=0.6759 vmax_mean=None
+
+== ktr_speed_by_position ==
+  WR: mean=0.8151 median=0.8215 vmax_mean=0.7812
+  TE: mean=0.7547 median=0.7614 vmax_mean=0.7295
+  DB: mean=0.7329 median=0.7414 vmax_mean=0.7026
+  DL: mean=0.6243 median=0.6274 vmax_mean=0.6059
+  OL: mean=0.5170 median=0.5113 vmax_mean=0.5050
+
+== per_position_spearman (Y2_quality) ==
+  DB: n=71 rho=-0.1655 p=0.16773097022118036
+  DL: n=73 rho=0.5067 p=4.775816447789222e-06
+  OL: n=67 rho=-0.0360 p=0.7726793579509809
+  TE: n=22 rho=-0.1575 p=0.4838158563520074
+  WR: n=66 rho=0.2417 p=0.0505160815738933
+
+== DL split (EDGE vs IDL) ==
+  {
+ "EDGE": {
+  "n": 66,
+  "v_max_best~game_s_p99": {
+   "partial_r": 0.38879711781514187,
+   "p": 0.009976423301886238,
+   "n": 43
+  },
+  "skill_accel_p95_z_mean~game_accel_p95": {
+   "partial_r": 0.28858476252370857,
+   "p": 0.031006872713072092,
+   "n": 56
+  },
+  "skill_decel_p95_z_mean~game_decel_p95": {
+   "partial_r": 0.356791540768395,
+   "p": 0.006949999532595841,
+   "n": 56
+  },
+  "skill_lat_accel_p95_z_mean~game_lat_accel_p95": {
+   "partial_r": 0.24034377252947578,
+   "p": 0.07438186620144274,
+   "n": 56
+  },
+  "Y2_M1_spearman": {
+   "rho": 0.4378129117259552,
+   "p": 0.0026321231626446197,
+   "n": 45
+  }
+ },
+ "IDL": {
+  "n": 52,
+  "v_max_best~game_s_p99": {
+   "partial_r": -0.06578696266634802,
+   "p": 0.7116409230471191,
+   "n": 34
+  },
+  "skill_accel_p95_z_mean~game_accel_p95": {
+   "partial_r": 0.2349652481408933,
+   "p": 0.1341712460265999,
+   "n": 42
+  },
+  "skill_decel_p95_z_mean~game_decel_p95": {
+   "partial_r": -0.030729923716319156,
+   "p": 0.8468117156850605,
+   "n": 42
+  },
+  "skill_lat_accel_p95_z_mean~game_lat_accel_p95": {
+   "partial_r": 0.3957036680784356,
+   "p": 0.009489631932436758,
+   "n": 42
+  },
+  "Y2_M1_spearman": {
+   "rho": 0.31253420908593316,
+   "p": 0.10539680055946204,
+   "n": 28
+  }
+ }
+}
