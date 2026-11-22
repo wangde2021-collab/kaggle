@@ -132,7 +132,10 @@ def forty_features(events):
         sub = sub.iloc[: end + 1]
         dist = dist[: len(sub)]  # Round-1 fix: slice dist AFTER truncating sub
         t = sub["t_sec"].to_numpy() - sub["t_sec"].iloc[0]
-        fit = fit_sprint_curve(t, sub["s_smooth"].to_numpy())
+        s_end = sub["s_smooth"].to_numpy()
+        # Round-2 fix: pass the measured peak speed so fit_sprint_curve can
+        # cap v_max at s_peak * 1.12 and fit a start-time offset t0.
+        fit = fit_sprint_curve(t, s_end, s_peak=float(np.max(s_end)))
 
         def split_time(d0, d1):
             # Round-1 fix: linear interpolation instead of searchsorted steps
@@ -140,12 +143,12 @@ def forty_features(events):
                 return np.nan
             return float(np.interp(d1, dist, t) - np.interp(d0, dist, t))
 
-        s_end = sub["s_smooth"].to_numpy()
         tail = s_end[dist >= 30.0]
         speed_maint = float(np.mean(tail) / fit["v_max"]) if len(tail) and np.isfinite(fit["v_max"]) else np.nan
         rows.append({
             "event_id": eid, "nfl_id": int(df["nfl_id"].iloc[0]),
             "v_max": fit["v_max"], "tau": fit["tau"], "a0": fit["a0"], "r2": fit["r2"],
+            "t0": fit["t0"],
             "split_0_5yd": split_time(0, 5), "split_5_10yd": split_time(5, 10),
             "split_10_20yd": split_time(10, 20), "speed_maintenance": speed_maint,
             "s_peak": float(np.max(s_end)),
@@ -321,7 +324,6 @@ def calibrate_position_z(X, y_raw, pos, label="", n_splits=5, seed=42):
         return {"label": label, "n": int(len(X)), "oof_r_within": np.nan,
                 "oof_r2_within": np.nan, "oof_r_pooled_raw": np.nan,
                 "fold_r": [], "alpha": np.nan}, None
-    X = X.fillna(X.median(numeric_only=True))
     kf = KFold(n_splits=n_splits, shuffle=True, random_state=seed)
     oof = np.full(len(X), np.nan)
     fold_rs = []
@@ -329,6 +331,15 @@ def calibrate_position_z(X, y_raw, pos, label="", n_splits=5, seed=42):
         Xtr, Xva = X.iloc[tr], X.iloc[va]
         ytr, yva = y_raw.iloc[tr], y_raw.iloc[va]
         ptr, pva = pos.iloc[tr], pos.iloc[va]
+        # Round-2 fix: imputation INSIDE the fold -- per-position median
+        # from the TRAIN fold, falling back to the train global median.
+        # (The old code filled with the full-sample global median BEFORE
+        # the split, a pre-fold leak.)
+        for _c in feat_cols:
+            _med = Xtr.groupby(ptr)[_c].median()
+            _g = float(Xtr[_c].median()) if np.isfinite(Xtr[_c].median()) else 0.0
+            Xtr = Xtr.assign(**{_c: Xtr[_c].fillna(ptr.map(_med)).fillna(_g)})
+            Xva = Xva.assign(**{_c: Xva[_c].fillna(pva.map(_med)).fillna(_g)})
         # position-z target on train stats
         ytr_z = (ytr - ytr.groupby(ptr).transform("mean")) / ytr.groupby(ptr).transform("std").replace(0, np.nan)
         ytr_z = ytr_z.fillna(0.0)
@@ -356,6 +367,9 @@ def calibrate_position_z(X, y_raw, pos, label="", n_splits=5, seed=42):
     # pooled raw-seconds r (the OLD metric, for comparison)
     r_pooled = float(np.corrcoef(oof[okm], y_raw.to_numpy(dtype=float)[okm])[0, 1]) if okm.sum() > 10 else np.nan
     # full fit for scoring all players (position stats on the calibration set)
+    # NOTE: this full-fit fill is scoring-time only; the leak-free OOF
+    # estimate above is what the reported r uses.
+    X = X.fillna(X.median(numeric_only=True))
     X_z, stats = _position_z_fit(X.assign(_pos=pos), feat_cols, "_pos")
     gstats = {c: (float(X[c].mean()), float(X[c].std() or 1.0)) for c in feat_cols}
     y_z = (y_raw - y_raw.groupby(pos).transform("mean")) / y_raw.groupby(pos).transform("std").replace(0, np.nan)
@@ -382,9 +396,9 @@ def calibrate_shadow_agility(skill_player, cr, forty_agg):
 
     Returns (shadow index DataFrame with pure + full versions, report dict).
     Feature sets (mass-free only for Pure): skill _mean + _top2 columns.
-    Full adds forty-curve (v_max_best, tau_best) + fold-clean lower-body
-    burst. Targets are position-z-scored inside folds (see
-    calibrate_position_z).
+    Full adds forty-curve (v_max_best, tau_best) + raw vertical / broad_jump
+    (fold-clean position-z inside calibrate_position_z). Targets are
+    position-z-scored inside folds (see calibrate_position_z).
     """
     feat_pure = [c for c in skill_player.columns
                  if c.startswith("skill_") and
@@ -395,11 +409,11 @@ def calibrate_shadow_agility(skill_player, cr, forty_agg):
             "vertical", "broad_jump"]], on="nfl_id", how="left")
     df = df.merge(forty_agg[["nfl_id", "v_max_best", "tau_best"]],
                   on="nfl_id", how="left")
-    # fold-clean lower-body burst (raw vertical / broad_jump -> position z)
-    lb = zscore_within(df[["nfl_id", "combine_position", "vertical", "broad_jump"]],
-                       ["vertical", "broad_jump"], "combine_position")
-    df["lower_body_burst_fc"] = lb[["vertical_z", "broad_jump_z"]].mean(axis=1)
-    feat_full = feat_pure + ["v_max_best", "tau_best", "lower_body_burst_fc"]
+    # Round-2 fix: NO pre-fold lower_body_burst_fc any more -- the old
+    # full-sample position z of vertical / broad_jump leaked across folds.
+    # The raw vertical / broad_jump columns go in instead; calibrate_position_z
+    # position-z-scores every feature inside each fold on train stats only.
+    feat_full = feat_pure + ["v_max_best", "tau_best", "vertical", "broad_jump"]
     report = {}
     preds = {}
     for target, col in [("three_cone", "three_cone"), ("short_shuttle", "short_shuttle")]:
@@ -536,6 +550,7 @@ def main():
                  .agg(v_max_best=("v_max", "max"), tau_best=("tau", "min"),
                       v_max_mean=("v_max", "mean"), tau_mean=("tau", "mean"),
                       a0_mean=("a0", "mean"),
+                      forty_s_peak=("s_peak", "max"), t0_mean=("t0", "mean"),
                       split_0_5yd_mean=("split_0_5yd", "mean"),
                       split_5_10yd_mean=("split_5_10yd", "mean"),
                       split_10_20yd_mean=("split_10_20yd", "mean"),

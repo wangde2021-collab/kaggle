@@ -155,10 +155,20 @@ def cut_events(df, omega_thresh_deg=60.0, s_apex_min=0.5):
     return events
 
 
-def fit_sprint_curve(t, v):
+def fit_sprint_curve(t, v, s_peak=None):
     """Fit Furusawa-Hill / Samozino sprint model v(t) = v_max * (1 - exp(-t/tau)).
 
-    Returns dict(v_max, tau, a0, r2) or None values on failure.
+    Round-2 fix (Gemini review 2026-11-21): the old no-offset fit forced the
+    curve through (0, 0), so the ~0.8-0.9 s low-speed start-up tail (crouch
+    wobble / sensor lag before the 3-frame s > 0.5 yd/s trigger) inflated
+    tau to ~1.4-1.5 s and pushed the asymptotic v_max to 12.20-12.27 yd/s
+    for WRs -- faster than any Combine athlete ever ran (~25 mph). The fit
+    now includes a start-time offset t0:
+        v(t) = v_max * (1 - exp(-max(t - t0, 0) / tau)), t0 in [-0.3, 1.5]
+    and a physical cap v_max <= s_peak * 1.12 (s_peak = measured peak
+    speed of the same attempt; no stopwatch split is used as a constraint,
+    so TRACK_PURE stays stopwatch-free). Returns dict(v_max, tau, a0, r2,
+    t0) or NaN values on failure.
     """
     from scipy.optimize import curve_fit
 
@@ -167,21 +177,29 @@ def fit_sprint_curve(t, v):
     ok = np.isfinite(t) & np.isfinite(v)
     t, v = t[ok], v[ok]
     if len(t) < 10 or t.max() < 1.0:
-        return {"v_max": np.nan, "tau": np.nan, "a0": np.nan, "r2": np.nan}
+        return {"v_max": np.nan, "tau": np.nan, "a0": np.nan, "r2": np.nan,
+                "t0": np.nan}
     v0 = float(np.max(v))
+    cap = float(s_peak) * 1.12 if (s_peak is not None
+                                   and np.isfinite(s_peak)
+                                   and s_peak > 0) else v0 * 1.5 + 1.0
+    cap = max(cap, v0 * 1.02)  # never cap below the observed peak
 
-    def model(tt, vmax, tau):
-        return vmax * (1.0 - np.exp(-tt / tau))
+    def model(tt, vmax, tau, t0):
+        return vmax * (1.0 - np.exp(-np.maximum(tt - t0, 0.0) / tau))
 
     try:
-        popt, _ = curve_fit(model, t, v, p0=[v0, 0.5],
-                            bounds=([max(v0 * 0.8, 1.0), 0.05], [v0 * 1.5 + 1.0, 3.0]),
+        popt, _ = curve_fit(model, t, v, p0=[min(v0, cap), 0.5, 0.0],
+                            bounds=([max(v0 * 0.8, 1.0), 0.05, -0.3],
+                                    [cap, 3.0, 1.5]),
                             maxfev=5000)
-        vmax, tau = float(popt[0]), float(popt[1])
-        pred = model(t, vmax, tau)
+        vmax, tau, t0 = float(popt[0]), float(popt[1]), float(popt[2])
+        pred = model(t, vmax, tau, t0)
         ss_res = float(np.sum((v - pred) ** 2))
         ss_tot = float(np.sum((v - np.mean(v)) ** 2))
         r2 = 1.0 - ss_res / ss_tot if ss_tot > 0 else np.nan
-        return {"v_max": vmax, "tau": tau, "a0": vmax / tau, "r2": r2}
+        return {"v_max": vmax, "tau": tau, "a0": vmax / tau, "r2": r2,
+                "t0": t0}
     except Exception:
-        return {"v_max": np.nan, "tau": np.nan, "a0": np.nan, "r2": np.nan}
+        return {"v_max": np.nan, "tau": np.nan, "a0": np.nan, "r2": np.nan,
+                "t0": np.nan}

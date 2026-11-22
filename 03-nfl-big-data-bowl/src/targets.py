@@ -98,7 +98,8 @@ def _residualize(df, y_col, x_cols, group_col="combine_position"):
     return out
 
 
-def _eb_shrink_player_means(means, vars_, ns, group):
+def _eb_shrink_player_means(means, vars_, ns, group, kappa_log=None,
+                            metric=None):
     """Empirical-Bayes shrinkage of per-player metric means.
 
     Per position group, method-of-moments variance decomposition on the
@@ -110,6 +111,11 @@ def _eb_shrink_player_means(means, vars_, ns, group):
     Players with few plays are shrunk hard toward the group mean; players
     with many plays keep their observed mean. Applied to RAW means (before
     any z-scoring).
+
+    Round-2 fix: when kappa_log (a dict) is given, the fitted kappa of
+    every position group x metric is recorded there, so the paper's methods
+    table can cite it (kappa near the 200 clip = no detectable
+    between-player signal for that metric in that group).
     """
     out = means.copy()
     for grp, idx in group.groupby(group).groups.items():
@@ -126,23 +132,28 @@ def _eb_shrink_player_means(means, vars_, ns, group):
         if not np.isfinite(sb2) or sb2 <= 0:
             sb2 = max(0.05 * sw2, 1e-12)  # no detectable between-player signal
         kappa = float(np.clip(sw2 / sb2, 0.0, 200.0))
+        if kappa_log is not None:
+            kappa_log[f"{grp}::{metric}"] = round(kappa, 3)
         mu = float(np.mean(m))
         out.loc[idx] = (n * m + kappa * mu) / (n + kappa)
     return out
 
 
-def _build_composite(table, metrics, group_col="pos_group"):
+def _build_composite(table, metrics, group_col="pos_group", kappa_log=None):
     """EB-shrink each metric, z-score within position, average the z's.
 
     `table` is indexed by nfl_id with columns pos_group and, per metric m,
     f"{m}_mean" / f"{m}_var" / f"{m}_n". Returns (composite Series, z DataFrame).
+    When kappa_log is given, per-(group x metric) EB kappa values are
+    recorded in it (Round-2 fix).
     """
     zcols = []
     for m in metrics:
         means = table[f"{m}_mean"]
         vars_ = table[f"{m}_var"]
         ns = table[f"{m}_n"]
-        shrunk = _eb_shrink_player_means(means, vars_, ns, table[group_col])
+        shrunk = _eb_shrink_player_means(means, vars_, ns, table[group_col],
+                                          kappa_log=kappa_log, metric=m)
         g = shrunk.groupby(table[group_col])
         z = (shrunk - g.transform("mean")) / g.transform("std").replace(0, np.nan)
         zcols.append(z.rename(m + "_z"))
@@ -274,17 +285,24 @@ def build_y2(pp, games, players, combine_results):
     y2.index.name = "nfl_id"
     metric_cols = sorted({c[:-5] for c in y2.columns if c.endswith("_mean")})
     # diagnostic composite on ALL players (pre-gate)
-    z_qual_raw, _ = _build_composite(y2, metric_cols)
+    kappa_raw = {}
+    z_qual_raw, _ = _build_composite(y2, metric_cols, kappa_log=kappa_raw)
     y2["z_qual_raw"] = z_qual_raw
     # primary composite: gate first (position-specific n_plays), then
     # re-run EB shrinkage + z-scoring on the gated set only
     thr = y2["pos_group"].map(POS_MIN_PLAYS)
     gated = y2[y2["n_plays"] >= thr].copy()
-    z_qual_gated, _ = _build_composite(gated, metric_cols)
+    kappa_gated = {}
+    z_qual_gated, _ = _build_composite(gated, metric_cols,
+                                       kappa_log=kappa_gated)
     y2["z_qual"] = np.nan
     y2.loc[gated.index, "z_qual"] = z_qual_gated
     y2["y2_covered"] = y2["n_plays"] >= thr
-    return y2.reset_index()
+    # Round-2 fix: EB kappa per (position group x metric) for the methods
+    # table; the gated composite is primary, the pre-gate one diagnostic.
+    kappa_log = {f"gated::{k}": v for k, v in kappa_gated.items()}
+    kappa_log.update({f"raw::{k}": v for k, v in kappa_raw.items()})
+    return y2.reset_index(), kappa_log
 
 
 def main():
@@ -301,7 +319,7 @@ def main():
     cr = pd.read_parquet(os.path.join(args.parquet, "combine_results.parquet"))
 
     y1, n_reg, corr, gap_counts = build_y1(pp, games, players, career)
-    y2 = build_y2(pp, games, players, cr)
+    y2, kappa_log = build_y2(pp, games, players, cr)
 
     t = y1.merge(y2[["nfl_id", "pos_group", "n_plays", "z_qual_raw", "z_qual",
                      "y2_covered"]], on="nfl_id", how="left")
@@ -338,6 +356,9 @@ def main():
             "z_qual_std": float(np.nanstd(t["z_qual"])),
             "z_qual_raw_mean": float(np.nanmean(t["z_qual_raw"])),
             "z_qual_raw_std": float(np.nanstd(t["z_qual_raw"])),
+            # Round-2 fix: EB kappa per (position group x metric); kappa
+            # near the 200 clip = no detectable between-player signal.
+            "eb_kappa": kappa_log,
         },
         "y3_start_rate_mean": float(t["start_rate"].mean()),
     }

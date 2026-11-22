@@ -67,3 +67,84 @@
 - 本地 venv：`~/workspace/kaggle-data/.venv`（numpy 1.26.4 / pandas 2.1.4 / scipy 1.11.4 / pyarrow 15.0.0 / statsmodels 0.15.0）
 - 服务器：`/home/wangde2021/03-nfl-big-data-bowl` 尚不存在（待建）；服务器 Python 3.12.3
 - GitHub：`wangde2021-collab/kaggle` 仓库 `03-nfl-big-data-bowl/` 待推送（12 个文件）
+
+---
+
+# 终稿（2026-11-22，定时任务 nfl-big-data-bowl-2027-continue-2 收尾）
+
+> **本节为本次定时任务（2026-11-21 18:10 – 2026-11-22 18:10 CST）的终稿，追加在阶段报告之后，阶段报告原文未动。** 五轮 Gemini 核对中第 3、4 轮已完成，第 5 轮服务器全量仍在跑、Gemini 第 5 轮未做——见“未完成事项”。**没有提交任何东西**（writeup 评审制，每队仅 1 次提交，提交前必须经二大爷另行点头）。数字来源：各轮服务器结果冻结文件（`notes/phase3_results_roundN_server.md`）与本地冒烟日志；冒烟数字只验代码、不算数。
+
+## 1. 五轮总览
+
+| 轮次 | Gemini 回传 | 总裁决 | 关键改动 | 服务器全量 |
+|---|---|---|---|---|
+| 第 1 轮 | 2026-11-21 09:44 | 方案假设多处被纠正；Shadow 假失败 | 10 项硬 Bug 修复（Year-1 截断、EB 收缩、END_EVENTS、drill 折内归一化等） | 修复前快照 + 修复后基线（Phase 3c 2h44m） |
+| 第 2 轮 | 2026-11-21 17:04 | Path B 确认；主线切为“专项功能速度 vs 秒表速度” | t0 修复、M0b 拆分、permutation_p 修复、定价回归、FDR 拆族 | 第 3 轮服务器（6h10m） |
+| 第 3 轮 | 2026-11-22 01:13 | Phase 1/2/3a/3b 冻结；Phase 3c 暂不可冻结 | DrillFoldClean 清零 Bug、M1_over_stopwatch 偷混顺位（“+0.1040”撤回） | 第 3 轮：Y2 M1 0.1000；对抗 ALL 0.6627 |
+| 第 4 轮 | 2026-11-22 13:04 | 主 CV 结论跑通；Phase 3c 又查出 2 Bug + 1 口径问题 | 未见届填补三级、protect 默认改 False、ktr 分母、敏感性门槛、置换缓存提速 | 第 4 轮：model 7h14m；Y2 M1 0.1335；对抗全块 ~0.49 |
+| 第 5 轮 | 未做 | —（待服务器数） | 同上（仅改 model_phase3.py，约 60 行） | **进行中，未完成**（见 §5） |
+
+## 2. 每轮验证分数（Y2 为主目标，10×5 CV 均值 r；种子 42）
+
+### 第 3 轮服务器（2026-11-21 18:44 – 11-22 00:54，6h10m）
+- Y2：M0a 0.1009、M0b_stopwatch −0.0198、M0c_ngs 0.1926、M0b 0.1959、M0all 0.1747、M1 0.1000、M1b 0.2020、M1_over_stopwatch 0.0843。Δ M1_over_stopwatch +0.1040（**后证实为混入顺位的假数，已撤回**）；Δ M1 vs M0a −0.0009；置换 p=0.0350。
+- 对抗验证 draft_year macro AUC：ALL 0.6627、FORTY_ONLY 0.6646、SKILL_ONLY 0.4773、STATIC_ONLY 0.5742（届别信号未消除）。
+- LOCO_Y2 M1：2023 0.197/0.185、2024 0.094/0.094、2025 0.011/0.015。targets 510 人、y2 covered 299；game_kinematics 401 人、10,424,763 帧。
+
+### 第 4 轮服务器（2026-11-22 03:41–12:44，9h03m；model_phase3 --within-year 7h14m）
+- Y2：M0a 0.1009、M0b_stopwatch −0.0016、M0c_ngs 0.1984、M0b 0.1756、M0all 0.1629、M1 0.1335、M1a 0.1403、M1b 0.1587、M1_track_only 0.0902、M1_over_stopwatch 0.0755、M1_over_all 0.1823。
+- 干净主增量：Δ M1_over_stopwatch **+0.0771 CI [+0.0122, +0.1545]**；Δ M1_track_only +0.0918 CI [−0.0076, +0.2217]；Δ M1 vs M0a +0.0326 CI [−0.0114, +0.0819]；Δ M1a vs M0a +0.0394；置换 p=0.0030。
+- Y1 双重分离：hurdle stage1 M0a 0.8631 / M1 0.8641；stage2_logASR M0a 0.6611 / M1 0.6607——Y1 零增量、Y2 有增量。
+- 对抗验证：ALL 0.4922、FORTY_ONLY 0.4924、SKILL_ONLY 0.4892、STATIC_ONLY 0.4879——**四分块全部回到随机水平 0.50**。
+- LOCO_Y2 M1：2023 0.1537、2024 0.1303、2025 0.0496（Gemini 指出该数被 Bug A 污染，不可据此下悲观结论）。时序 Y1_year1_hurdle M1 0.8701、logsnaps 0.6200。
+- 定价：forty_s_peak β=+0.225、v_max_best +0.189、skill_s_peak +0.153（q=0.001）。稳健性阶梯：+pick β=0.156 p=0.0003 → +pick+forty β=0.094 p=0.077 → +pick+ngs β=0.138 p=0.0027 → 三重 β=0.093 p=0.0886（n=252）。
+- DL 拆分：EDGE skill_decel~game_decel r=+0.357（p=0.0069，n=56），Y2 Spearman +0.438（p=0.0026，n=45）；IDL 各对角线 ≈0，但 lat_accel r=+0.396（p=0.0095），Y2 Spearman +0.313（p=0.105，n=28）。
+- M3 LightGBM Y2 r=0.1457。M2 中介：decel −0.0050（−3.3%）、burst_1s +0.0117（+7.8%，边界结论）。
+
+### 第 5 轮本地冒烟 r6（2026-11-22 13:28–14:21，52 分 50 秒，CHAIN_EXIT=0）
+- 冒烟只验代码，数字不算数；三项 Gemini 验收冒烟版均绿灯：① LOCO 回升（2023 0.1835、2024 0.1317、2025 0.0522）；② M0all 0.1960 ≥ M0c_ngs 0.1948，delta_M1_over_all_vs_M0all +0.0009 CI [−0.0101, +0.0109]（第 4 轮 +0.0194 确为口径伪影，已归零）；③ ktr WR 0.8075（全量预测 0.815）。
+- 阶梯第 5 步（决定性）：forty.notna() 子集（n=253）只控 log_pick，β=0.1238、p=0.0041 仍显著；衰减主因是 forty 共线性（约 2/3），样本缩水约占 1/3。
+
+## 3. 当前最佳方案与分数
+
+- 当前最佳 = 第 4 轮服务器版（--within-year，M1/M1a）：Y2 M1 0.1335、M1a 0.1403；干净 headline 增量 Δ M1_over_stopwatch +0.0771 CI [+0.0122, +0.1545]（超越纯秒表）与 Δ M1a vs M0a +0.0394（超越选秀顺位基线，置换 p=0.0030 补充）。
+- 一号主结论（Gemini 第 4 轮裁决）：Y1 零增量 vs Y2 增量的**双重分离**——选秀顺位买得到出场档数、买不到单档效率；追踪特征只在质量端（Y2）增量预测。
+- 二号结论：DL 亚组拆解（EDGE 靠速度/加速/制动迁移，IDL 靠横向变向载荷迁移）直接写正文。
+- Fig 4 措辞：**“差异化市场定价效率”**，绝不写“市场完全错误定价”。
+- 方法节术语：--within-year 定义为 "Within-Cohort Unsupervised Harmonization"；_safe_sd 地板（组内 sd < 全局 sd 5% 视为退化、改用全局 sd）直接写入方法节。
+
+## 4. 代码和数据位置
+
+- 本地：`~/workspace/kaggle-data/03-nfl-big-data-bowl/`（src/ 8 个 py；notes/ 本报告与各轮记录；data/ 2.31GB 原始 CSV + parquet_smoke/ + derived_smoke/，**数据不上传、不外传**）。
+- 本轮冻结版 model_phase3.py：md5 6d1c3f7dc117ce7574dfaa09a3955ebe，94,930 字节，1,819 行（2026-11-22 13:22 左右本地改完，py_compile 通过，6 项直接执行测试全过）。
+- 服务器：`/home/wangde2021/03-nfl-big-data-bowl`，机型 e2-standard-2（2 核 8G），IP 35.213.17.8；第 5 轮 model_phase3（PID 79903）仍在跑，日志 `logs/phase3c_model_r5.log`。
+- 服务器备份：`prefix_snapshot_r4/`（第 5 轮前备份，9 文件，逐文件 cmp 全部一致）。
+- GitHub：`wangde2021-collab/kaggle` 仓库 `03-nfl-big-data-bowl/`——见 §6 同步状态。
+- 运行日志：`~/workspace/goals/kaggle-learning-practice/hidden_files/nfl-20261121-continue-runlog.md`；轮次记录：`notes/gemini_review_rounds.md`；各轮 Gemini 回复全文：`notes/gemini_roundN_20261122.md`。
+
+## 5. 未完成事项（停在哪一步、还剩什么）
+
+1. **服务器第 5 轮全量未完成。** 2026-11-22 14:25 派发，15:12:33 启动 model_phase3（--within-year，种子 42、10×5 CV、1000 置换、2000 自助）；前三步（features_combine、targets、game_kinematics）均已完成、退出码 0；model_phase3 到 17:16 仍在跑（已 2h03m，PID 79903 存活、CPU ~108%、累计 CPU 134:01），日志 3,403 行、只打印了 `[drill]` 与 `[Y1_hurdle_stage1]` 两个章节。**30–45 分钟的提速预估未兑现**（第 4 轮 model 7h14m；首个结果章节约 88 分钟才打印；置换缓存虽已实现，但主 CV 仍占主导）。按任务时间管理规则（预算 18:10 CST 将尽），**未杀掉进程、未重跑**，留待后续任务回来收数；收数时先确认日志退出码为 0，再按清单回传全部结果。
+   - 已拿到的部分数（仅 Y1_hurdle_stage1，**不是 Y2**）：M0a 0.8631、M1 0.8641、M0all 0.8640、M1a 0.8651；Δ M1 vs M0a +0.0009 CI [−0.0079, +0.0065]；置换 p=0.0599。Y2 数、对抗验证、定价、阶梯、LOCO、ktr 均待收数。详见 `notes/phase3_results_round5_server.md`（标注“进行中”）。
+2. **Gemini 第 5 轮未做。** 提纲骨架已起草（`notes/gemini_round5_draft.md`，最终冻结确认轮，6 个待裁决问题）；待服务器第 5 轮数字回传后填入再派。3 项验收（LOCO/时序、M0all 口径、ktr WR）冒烟版已绿灯。
+3. **终稿报告的提交规格冲突仍待核准**（只写进报告，不替二大爷办）：比赛页现写文章 ≤2,000 词、图表 <10 张、附公开 Kaggle Notebook，与此前记的 15 页英文 writeup 不符；写报告前先核准以哪个为准。Kaggle 身份验证与手机验证已于 2026-11-22 经账号设置页核实完成（身份验证走 Persona），提交前无验证障碍。
+
+## 6. GitHub 同步状态
+
+- 本趟尝试同步：本地仓库 `~/workspace/kaggle-data`（remote `git@github.com:wangde2021-collab/kaggle.git`，main 分支，最新提交 a2ca1d9 为 Titanic），`03-nfl-big-data-bowl/` 全部文件仍未跟踪（0 个已跟踪文件）。直接 `git ls-remote` 失败：沙箱代理重置了到 github.com:22 的 SSH 连接（`Connection reset by peer`，经 198.19.0.1:3128），git 直推此路不通；`gh` CLI 未登录。
+- **本次未完成推送。** 下次同步请走 GitHub 连接器的 `push-files`（此前 Titanic 推送即用此路；第 1 轮报告里该路曾两次被云端服务重启打断，写操作中断后先查远端再重试）。待推内容：`03-nfl-big-data-bowl/src/*.py`（8 个，约 200KB，含本轮冻结版 model_phase3.py）+ `notes/*.md` + `README.md` + `requirements.txt`；**绝不推 data/**（2.7GB 原始 CSV 与 parquet）。同步记录文件 `~/workspace/kaggle-data.muse-github-snapshot-sync.json` 未推进（按规矩，确认远端生效后才推进）。
+
+## 7. 离能提交还差什么
+
+1. 收服务器第 5 轮全量结果 → 派 Gemini 第 5 轮 → 若宣布冻结，代码即最终冻结版。
+2. 核准提交规格（≤2,000 词 + <10 图 + 公开 Notebook vs 15 页 writeup），以哪个为准。
+3. 按核准后的规格写报告：Phase 4 可视化（6 张图：Fig 4 定价森林图、Fig 5 KTR 热力图等）+ 球员案例 + 15 页英文 writeup（或 ≤2,000 词文章）+ 开源复现包（代码按 OSI 许可公开）。
+4. 提交：**必须二大爷另行点头**，每队仅 1 次。截止 2027-01-07 07:59（GMT+8），内部提交日 2027-01-05。
+
+## 8. 风险与下一步建议
+
+- **提速预估失真**：置换缓存只省了 Stage 1 重拟合，全量瓶颈仍在主 CV；下次报时按第 4 轮实测 7h14m 打底，不要再报 30–45 分钟。
+- **服务器仍被第 5 轮占用**：收数前不要在同一目录启动其他重活；收数后若无后续重跑，按已拍板的状态保持 e2-standard-2（不要重复降级，降级步骤已提前做完）。
+- **x-ui 已澄清**：面板在自定义路径 `/287a58ff96/`，服务器本地实测 HTTP 200；之前对 `/`、`/login` 等路径的 404 不是故障。服务 active（running），xray 在运行，2053 端口 LISTEN。
+- **统计风险未变**：样本仅 510 人、Y2 仅 299 人；LOCO 2025（n 小）与时序外推仍是薄弱点，第 5 轮全量数是裁决关键；旧轮次 bug 不必在正文披露为局限（Gemini 第 4 轮裁决）。
+- **下一步**：① 后续任务收第 5 轮服务器数（确认退出码 0）；② 填 Gemini 第 5 轮提纲并派发；③ 若冻结，写 Phase 4 可视化与终稿报告；④ 重试 GitHub 推送（走 push-files）。
