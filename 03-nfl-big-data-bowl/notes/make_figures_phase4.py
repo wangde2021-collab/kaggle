@@ -9,12 +9,14 @@ independent verification script (notes/verify_figures_phase4.py).
 Figures (7) + tables (2) = 9 items < 10 (competition limit).
   Fig 1  Double dissociation (Y1 zero gain vs Y2 gain, 95% CI)
   Fig 2  Beyond the stopwatch (absolute r + delta forest with 95% CI)
-  Fig 3  DL EDGE / IDL split (Role-Specific Kinematic Translation)
-  Fig 4  Differential market pricing efficiency (draft pricing vs Y2|draft)
-  Fig 5  LOCO / temporal robustness (LOCO Y2, 2025 forward Y1, Y2
+  Fig 3  Differential market pricing efficiency (draft pricing vs Y2|draft)
+  Fig 4  Robustness ladder for skill_s_peak (5 steps + 1:2 decomposition)
+  Fig 5  DL EDGE / IDL split (Role-Specific Kinematic Translation)
+  Fig 6  Combine-to-pads transfer (KTR 4x4 heatmap + game-speed retention)
+  Fig 7  LOCO / temporal robustness (LOCO Y2, 2025 forward Y1, Y2
          sensitivity, adversarial validation)
-  Fig 6  Robustness ladder for skill_s_peak (5 steps + 1:2 decomposition)
-  Fig 7  Combine-to-pads transfer (KTR 4x4 heatmap + game-speed retention)
+  (Renumbered 2026-11-23 per Gemini writeup review: figures now follow
+  first-appearance order in the draft.)
   Tab 1  Model comparison (Y1 hurdle AUC / Y1 stage-2 r / Y2 r)
   Tab 2  Per-position Spearman (Y2 M1 out-of-fold ranking)
 
@@ -168,7 +170,7 @@ fig.suptitle("Figure 2 — Beyond the stopwatch: 10 Hz tracking beats static tes
              x=0.02, ha="left", fontweight="bold", fontsize=11)
 savefig(fig, "fig2_beyond_stopwatch")
 
-# ---------------------------------------------------------------- Fig 3
+# ---------------------------------------------------------------- Fig 5 (was Fig 3)
 dl = d["M2_mediation"]["dl_edge_idl_split"]
 metrics3 = [
     ("Top speed\nv_max ~ game s_p99", "v_max_best~game_s_p99"),
@@ -177,7 +179,7 @@ metrics3 = [
     ("Lateral acceleration\nskill lat-accel ~ game lat-accel", "skill_lat_accel_p95_z_mean~game_lat_accel_p95"),
     ("Y2 out-of-fold\nSpearman ρ (M1)", "Y2_M1_spearman"),
 ]
-manifest["figures"]["fig3_dl_edge_idl"] = {
+manifest["figures"]["fig5_dl_edge_idl"] = {
     "EDGE_n": dl["EDGE"]["n"], "IDL_n": dl["IDL"]["n"],
     "rows": [{"metric": key,
               "EDGE": dl["EDGE"][key], "IDL": dl["IDL"][key]}
@@ -190,8 +192,8 @@ edge_r = [dl["EDGE"][k]["partial_r"] if "partial_r" in dl["EDGE"][k]
           else dl["EDGE"][k]["rho"] for _, k in metrics3]
 idl_r = [dl["IDL"][k]["partial_r"] if "partial_r" in dl["IDL"][k]
          else dl["IDL"][k]["rho"] for _, k in metrics3]
-ax.barh(ypos + w / 2, edge_r, height=w, color=BLUE, label="EDGE (DE/OLB, n=66)")
-ax.barh(ypos - w / 2, idl_r, height=w, color=ORANGE, label="IDL (DT/NT, n=52)")
+ax.barh(ypos + w / 2, edge_r, height=w, color=BLUE, label="EDGE (DE/OLB)")
+ax.barh(ypos - w / 2, idl_r, height=w, color=ORANGE, label="IDL (DT/NT)")
 for y, r, key in zip(ypos + w / 2, edge_r, [k for _, k in metrics3]):
     src = dl["EDGE"][key]
     ax.text(r + 0.015, y, f"{r:+.3f} (p={src['p']:.3f})", va="center", fontsize=8.5)
@@ -206,14 +208,14 @@ for y, r, key in zip(ypos - w / 2, idl_r, [k for _, k in metrics3]):
 ax.axvline(0, color=DARK, lw=1)
 ax.set_yticks(ypos)
 ax.set_yticklabels(labels3)
-ax.set_xlabel("Within-position partial r (combine → game)  /  Spearman ρ (Y2)")
+ax.set_xlabel("Within-subgroup Pearson r (combine → game)  /  Spearman ρ (Y2)")
 ax.set_xlim(-0.15, 0.62)
 ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.16), ncol=2, frameon=False)
-ax.set_title("Figure 3 — Role-specific kinematic translation: EDGE vs interior DL",
+ax.set_title("Figure 5 — Role-specific kinematic translation: EDGE vs interior DL",
              loc="left", fontweight="bold")
-savefig(fig, "fig3_dl_edge_idl")
+savefig(fig, "fig5_dl_edge_idl")
 
-# ---------------------------------------------------------------- Fig 4
+# ---------------------------------------------------------------- Fig 3 (was Fig 4)
 pricing = {x["feature"]: x for x in d["draft_pricing"]}
 fdr_full = {x["feature"]: x for x in d["fdr_Y2_full"]}
 rows4 = [
@@ -227,13 +229,13 @@ rows4 = [
     ("Skill-drill deceleration", "skill_decel_p95_z_mean"),
     ("Skill-drill lateral acceleration", "skill_lat_accel_p95_z_mean"),
 ]
-manifest["figures"]["fig4_pricing_efficiency"] = []
+manifest["figures"]["fig3_pricing_efficiency"] = []
 for lab, feat in rows4:
     dp = pricing[feat]
     fy = fdr_full[feat]
     se_d = se_from_beta_p(dp["beta"], dp["p"])
     se_y = se_from_beta_p(fy["beta"], fy["p"])
-    manifest["figures"]["fig4_pricing_efficiency"].append({
+    manifest["figures"]["fig3_pricing_efficiency"].append({
         "feature": feat, "label": lab,
         "beta_draft": dp["beta"], "p_draft": dp["p"], "q_draft": dp["q_fdr"],
         "n_draft": dp["n"], "se_draft_derived": se_d,
@@ -263,16 +265,16 @@ axl.set_xlabel("β on −log(pick)\n(draft pricing, HC3 SE)")
 axr.set_xlabel("β on per-play quality z\n(given log pick, HC3 SE)")
 axl.set_title("(a) What the draft pays for", loc="left", fontweight="bold")
 axr.set_title("(b) What predicts on-field quality", loc="left", fontweight="bold")
-fig.suptitle("Figure 4 — Differential market pricing efficiency",
+fig.suptitle("Figure 3 — Differential market pricing efficiency",
              x=0.02, ha="left", fontweight="bold", fontsize=11)
-savefig(fig, "fig4_pricing_efficiency")
+savefig(fig, "fig3_pricing_efficiency")
 
-# ---------------------------------------------------------------- Fig 5
+# ---------------------------------------------------------------- Fig 7 (was Fig 5)
 loco = d["temporal"]["LOCO_Y2"]
 t = d["temporal"]
 adv = d["adversarial_validation"]
 sens = d["Y2_sensitivity"]
-manifest["figures"]["fig5_loco_temporal"] = {
+manifest["figures"]["fig7_loco_temporal"] = {
     "LOCO_Y2": {k: {"n_test": v["n_test"], "r": v["r"]} for k, v in loco.items()},
     "temporal_2025": {
         "Y1_year1_hurdle": {"M0a": t["Y1_year1_hurdle_M0a"]["metric"],
@@ -350,13 +352,13 @@ ax.set_ylabel("Macro AUC (predict draft year)")
 ax.set_title("(d) Adversarial validation: no cohort signal left", loc="left", fontweight="bold")
 ax.legend(fontsize=8)
 ax.set_ylim(0, 0.6)
-fig.suptitle("Figure 5 — Cross-cohort and temporal robustness",
+fig.suptitle("Figure 7 — Cross-cohort and temporal robustness",
              x=0.02, ha="left", fontweight="bold", fontsize=11)
-savefig(fig, "fig5_loco_temporal")
+savefig(fig, "fig7_loco_temporal")
 
-# ---------------------------------------------------------------- Fig 6
+# ---------------------------------------------------------------- Fig 4 (was Fig 6)
 ladder = d["robustness_skill_s_peak_ladder"]
-manifest["figures"]["fig6_robustness_ladder"] = [
+manifest["figures"]["fig4_robustness_ladder"] = [
     {"step": i + 1, "controls": s["controls"], "subset": s["subset"],
      "n": s["n"], "beta": s["beta"], "p": s["p"],
      "se_derived": se_from_beta_p(s["beta"], s["p"])} for i, s in enumerate(ladder)]
@@ -385,7 +387,7 @@ ax.set_xticklabels([step_labels[i] for i in range(5)], fontsize=8.5)
 ax.set_ylabel("β of skill_s_peak on per-play quality z")
 ax.set_ylim(-0.02, 0.28)
 ax.set_xlim(-0.55, 4.55)
-ax.set_title("Figure 6 — Robustness ladder: what attenuates the skill_s_peak effect",
+ax.set_title("Figure 4 — Robustness ladder: what attenuates the skill_s_peak effect",
              loc="left", fontweight="bold")
 ax.annotate("Sample attrition\n−0.020 (32.5%)",
             xy=(1, 0.1361), xytext=(0.9, 0.245),
@@ -393,9 +395,9 @@ ax.annotate("Sample attrition\n−0.020 (32.5%)",
 ax.annotate("Shared 40-yd speed variance\n−0.042 (67.5%)",
             xy=(3, 0.0944), xytext=(3.75, 0.245),
             arrowprops=dict(arrowstyle="->", color=DARK), fontsize=9, ha="center")
-savefig(fig, "fig6_robustness_ladder")
+savefig(fig, "fig4_robustness_ladder")
 
-# ---------------------------------------------------------------- Fig 7
+# ---------------------------------------------------------------- Fig 6 (was Fig 7)
 km = d["M2_mediation"]["ktr_matrix"]
 ksp = d["M2_mediation"]["ktr_speed_by_position"]
 rows7 = ["forty_s_peak", "skill_accel_p95_z_mean", "skill_decel_p95_z_mean",
@@ -407,7 +409,7 @@ for cell in km:
     if cell["combine"] in rows7 and cell["game"] in cols7:
         mat[rows7.index(cell["combine"]), cols7.index(cell["game"])] = cell["partial_r"]
         pmat[rows7.index(cell["combine"]), cols7.index(cell["game"])] = cell["p"]
-manifest["figures"]["fig7_ktr_transfer"] = {
+manifest["figures"]["fig6_ktr_transfer"] = {
     "ktr_matrix_4x4": [[{"r": float(mat[i, j]), "p": float(pmat[i, j])}
                         for j in range(4)] for i in range(4)],
     "ktr_speed_by_position": {pos: {"n": v["n"], "mean": v["ktr_speed_mean"],
@@ -450,9 +452,9 @@ ax2.set_xticklabels(pos_order)
 ax2.set_ylabel("Game top speed / 40-yd peak speed (%)")
 ax2.set_ylim(0, 95)
 ax2.set_title("(b) Game-speed retention by position", loc="left", fontweight="bold", fontsize=10)
-fig.suptitle("Figure 7 — Combine-to-pads transfer: speed survives the pads, unevenly",
+fig.suptitle("Figure 6 — Combine-to-pads transfer: speed survives the pads, unevenly",
              x=0.02, ha="left", fontweight="bold", fontsize=11)
-savefig(fig, "fig7_ktr_transfer")
+savefig(fig, "fig6_ktr_transfer")
 
 # ---------------------------------------------------------------- manifest
 with open(os.path.join(FIGDIR, "figure_data.json"), "w") as f:
@@ -479,7 +481,7 @@ labels_tab = {
 lines = []
 lines.append("# Phase 4 tables (from frozen round-5 JSON)\n")
 lines.append("## Table 1 — Model comparison (10×5 repeated CV, seed 42)\n")
-lines.append("| Model | Y1 hurdle AUC | Y1 stage-2 r (log snaps) | Y2 r (per-play quality) |")
+lines.append("| Model | Y1 hurdle AUC (n=510) | Y1 stage-2 r (n=236) | Y2 r (n=299) |")
 lines.append("|---|---|---|---|")
 for m in models_tab:
     a = d["Y1_hurdle_stage1"][m]["metric_mean"]
@@ -499,6 +501,7 @@ lines.append(f"- Permutation test (M1 vs M0a, Y2): obs Δr = "
              f"n_perm = {d['n_perm']}).")
 lines.append(f"- Y2 R²: M1 {y2['r2_M1']:.4f} vs M0a {y2['r2_M0a']:.4f}. "
              f"Y2 n = 299 (≥75 regular-season plays); Y1 n = 510.")
+lines.append("Deltas in text use unrounded means.")
 lines.append("")
 lines.append("## Table 2 — Per-position out-of-fold ranking (Y2, M1)\n")
 lines.append("| Position | n | Spearman ρ | p |")

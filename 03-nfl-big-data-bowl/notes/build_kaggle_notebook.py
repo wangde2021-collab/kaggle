@@ -202,9 +202,9 @@ print(r.stderr[-2000:] if r.returncode != 0 else "")
 CODE_SHOW_FIGS = '''from IPython.display import Image, display
 
 for name in ["fig1_double_dissociation", "fig2_beyond_stopwatch",
-             "fig3_dl_edge_idl", "fig4_pricing_efficiency",
-             "fig5_loco_temporal", "fig6_robustness_ladder",
-             "fig7_ktr_transfer"]:
+             "fig3_pricing_efficiency", "fig4_robustness_ladder",
+             "fig5_dl_edge_idl", "fig6_ktr_transfer",
+             "fig7_loco_temporal"]:
     display(Image(filename=f"figures/{name}.png", width=950))
 '''
 

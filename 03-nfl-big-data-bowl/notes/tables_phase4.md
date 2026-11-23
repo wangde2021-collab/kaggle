@@ -2,7 +2,7 @@
 
 ## Table 1 — Model comparison (10×5 repeated CV, seed 42)
 
-| Model | Y1 hurdle AUC | Y1 stage-2 r (log snaps) | Y2 r (per-play quality) |
+| Model | Y1 hurdle AUC (n=510) | Y1 stage-2 r (n=236) | Y2 r (n=299) |
 |---|---|---|---|
 | Draft pick only (log pick) (M0a) | 0.8631 | 0.6611 | 0.1009 |
 | Stopwatch only (40-yd, 10-yd, vertical, broad jump) (M0b_stopwatch) | 0.5968 | 0.4681 | -0.0016 |
@@ -25,6 +25,7 @@ Key deltas (Y2, mean Δr with 95% paired bootstrap CI):
 - delta_M1_over_all_vs_M0all: -0.0006 [-0.0169, +0.0158]
 - Permutation test (M1 vs M0a, Y2): obs Δr = +0.0415, p = 0.0030 (null -0.0051 ± 0.0090, n_perm = 1000).
 - Y2 R²: M1 0.0175 vs M0a 0.0098. Y2 n = 299 (≥75 regular-season plays); Y1 n = 510.
+Deltas in text use unrounded means.
 
 ## Table 2 — Per-position out-of-fold ranking (Y2, M1)
 

@@ -67,75 +67,75 @@ eq("fig2 perm p", f2["permutation_p_M1_vs_M0a"], y2["permutation"]["p_perm"])
 eq("fig2 perm obs", f2["permutation_obs"], y2["permutation"]["obs_delta"])
 
 # --- Fig 3
-f3 = M["figures"]["fig3_dl_edge_idl"]
+f3 = M["figures"]["fig5_dl_edge_idl"]
 dl = J["M2_mediation"]["dl_edge_idl_split"]
-eq("fig3 EDGE n", f3["EDGE_n"], dl["EDGE"]["n"])
-eq("fig3 IDL n", f3["IDL_n"], dl["IDL"]["n"])
+eq("fig6 EDGE n", f3["EDGE_n"], dl["EDGE"]["n"])
+eq("fig6 IDL n", f3["IDL_n"], dl["IDL"]["n"])
 for row in f3["rows"]:
     for grp in ("EDGE", "IDL"):
         src = dl[grp][row["metric"]]
         got = row[grp]
         if "partial_r" in src:
-            eq(f"fig3 {grp} {row['metric']} r", got["partial_r"], src["partial_r"])
+            eq(f"fig6 {grp} {row['metric']} r", got["partial_r"], src["partial_r"])
         else:
-            eq(f"fig3 {grp} {row['metric']} rho", got["rho"], src["rho"])
-        eq(f"fig3 {grp} {row['metric']} p", got["p"], src["p"])
-        eq(f"fig3 {grp} {row['metric']} n", got["n"], src["n"])
+            eq(f"fig6 {grp} {row['metric']} rho", got["rho"], src["rho"])
+        eq(f"fig6 {grp} {row['metric']} p", got["p"], src["p"])
+        eq(f"fig6 {grp} {row['metric']} n", got["n"], src["n"])
 
 # --- Fig 4
-f4 = M["figures"]["fig4_pricing_efficiency"]
+f4 = M["figures"]["fig3_pricing_efficiency"]
 pricing = {x["feature"]: x for x in J["draft_pricing"]}
 fdr = {x["feature"]: x for x in J["fdr_Y2_full"]}
 for row in f4:
     dp, fy = pricing[row["feature"]], fdr[row["feature"]]
-    eq("fig4 draft beta " + row["feature"], row["beta_draft"], dp["beta"])
-    eq("fig4 draft p " + row["feature"], row["p_draft"], dp["p"])
-    eq("fig4 draft q " + row["feature"], row["q_draft"], dp["q_fdr"])
-    eq("fig4 draft n " + row["feature"], row["n_draft"], dp["n"])
-    eq("fig4 Y2 beta " + row["feature"], row["beta_Y2_given_draft"], fy["beta"])
-    eq("fig4 Y2 p " + row["feature"], row["p_Y2"], fy["p"])
-    eq("fig4 Y2 q " + row["feature"], row["q_Y2"], fy["q_fdr"])
-    eq("fig4 Y2 n " + row["feature"], row["n_Y2"], fy["n"])
+    eq("fig3 draft beta " + row["feature"], row["beta_draft"], dp["beta"])
+    eq("fig3 draft p " + row["feature"], row["p_draft"], dp["p"])
+    eq("fig3 draft q " + row["feature"], row["q_draft"], dp["q_fdr"])
+    eq("fig3 draft n " + row["feature"], row["n_draft"], dp["n"])
+    eq("fig3 Y2 beta " + row["feature"], row["beta_Y2_given_draft"], fy["beta"])
+    eq("fig3 Y2 p " + row["feature"], row["p_Y2"], fy["p"])
+    eq("fig3 Y2 q " + row["feature"], row["q_Y2"], fy["q_fdr"])
+    eq("fig3 Y2 n " + row["feature"], row["n_Y2"], fy["n"])
     # SE derivation re-checked independently
     from scipy.stats import norm as _norm
     for beta, p, se in ((dp["beta"], dp["p"], row["se_draft_derived"]),
                         (fy["beta"], fy["p"], row["se_Y2_derived"])):
         z = _norm.ppf(1 - p / 2)
-        eq("fig4 SE " + row["feature"], se, abs(beta) / z, tol=1e-6)
+        eq("fig3 SE " + row["feature"], se, abs(beta) / z, tol=1e-6)
 
 # --- Fig 5
-f5 = M["figures"]["fig5_loco_temporal"]
+f5 = M["figures"]["fig7_loco_temporal"]
 for k, v in f5["LOCO_Y2"].items():
-    eq("fig5 LOCO " + k, v["r"], J["temporal"]["LOCO_Y2"][k]["r"])
-    eq("fig5 LOCO n " + k, v["n_test"], J["temporal"]["LOCO_Y2"][k]["n_test"])
+    eq("fig6 LOCO " + k, v["r"], J["temporal"]["LOCO_Y2"][k]["r"])
+    eq("fig6 LOCO n " + k, v["n_test"], J["temporal"]["LOCO_Y2"][k]["n_test"])
 t = J["temporal"]
-eq("fig5 2025 hurdle M0a", f5["temporal_2025"]["Y1_year1_hurdle"]["M0a"],
+eq("fig6 2025 hurdle M0a", f5["temporal_2025"]["Y1_year1_hurdle"]["M0a"],
    t["Y1_year1_hurdle_M0a"]["metric"])
-eq("fig5 2025 hurdle M1", f5["temporal_2025"]["Y1_year1_hurdle"]["M1"],
+eq("fig6 2025 hurdle M1", f5["temporal_2025"]["Y1_year1_hurdle"]["M1"],
    t["Y1_year1_hurdle_M1"]["metric"])
-eq("fig5 2025 logsnaps M0a", f5["temporal_2025"]["Y1_year1_logsnaps"]["M0a"],
+eq("fig6 2025 logsnaps M0a", f5["temporal_2025"]["Y1_year1_logsnaps"]["M0a"],
    t["Y1_year1_logsnaps_M0a"]["metric"])
-eq("fig5 2025 logsnaps M1", f5["temporal_2025"]["Y1_year1_logsnaps"]["M1"],
+eq("fig6 2025 logsnaps M1", f5["temporal_2025"]["Y1_year1_logsnaps"]["M1"],
    t["Y1_year1_logsnaps_M1"]["metric"])
 for k, v in f5["Y2_sensitivity"].items():
-    eq("fig5 sens " + k, v["oof_r_mean"], J["Y2_sensitivity"][k]["oof_r_mean"])
-    eq("fig5 sens n " + k, v["n"], J["Y2_sensitivity"][k]["n"])
-eq("fig5 main M1 r", f5["Y2_main_r_M1"], y2["M1"]["metric_mean"])
+    eq("fig6 sens " + k, v["oof_r_mean"], J["Y2_sensitivity"][k]["oof_r_mean"])
+    eq("fig6 sens n " + k, v["n"], J["Y2_sensitivity"][k]["n"])
+eq("fig6 main M1 r", f5["Y2_main_r_M1"], y2["M1"]["metric_mean"])
 for k, v in f5["adversarial_validation"].items():
-    eq("fig5 adv " + k, v, J["adversarial_validation"][k]["mean"])
+    eq("fig6 adv " + k, v, J["adversarial_validation"][k]["mean"])
 
 # --- Fig 6
 ladder = J["robustness_skill_s_peak_ladder"]
-for i, row in enumerate(M["figures"]["fig6_robustness_ladder"]):
+for i, row in enumerate(M["figures"]["fig4_robustness_ladder"]):
     s = ladder[i]
-    eq(f"fig6 step{i+1} beta", row["beta"], s["beta"])
-    eq(f"fig6 step{i+1} p", row["p"], s["p"])
-    eq(f"fig6 step{i+1} n", row["n"], s["n"])
+    eq(f"fig4 step{i+1} beta", row["beta"], s["beta"])
+    eq(f"fig4 step{i+1} p", row["p"], s["p"])
+    eq(f"fig4 step{i+1} n", row["n"], s["n"])
     if row["controls"] != s["controls"] or row["subset"] != s["subset"]:
-        fails.append(f"fig6 step{i+1} controls/subset mismatch")
+        fails.append(f"fig4 step{i+1} controls/subset mismatch")
 
 # --- Fig 7
-f7 = M["figures"]["fig7_ktr_transfer"]
+f7 = M["figures"]["fig6_ktr_transfer"]
 km = {(c["combine"], c["game"]): c for c in J["M2_mediation"]["ktr_matrix"]}
 rows7 = ["forty_s_peak", "skill_accel_p95_z_mean", "skill_decel_p95_z_mean",
          "skill_lat_accel_p95_z_mean"]
@@ -144,18 +144,18 @@ for i, r in enumerate(rows7):
     for j, c in enumerate(cols7):
         cell = f7["ktr_matrix_4x4"][i][j]
         src = km[(r, c)]
-        eq(f"fig7 ktr {r}/{c} r", cell["r"], src["partial_r"])
-        eq(f"fig7 ktr {r}/{c} p", cell["p"], src["p"])
+        eq(f"fig6 ktr {r}/{c} r", cell["r"], src["partial_r"])
+        eq(f"fig6 ktr {r}/{c} p", cell["p"], src["p"])
 for pos, v in f7["ktr_speed_by_position"].items():
     src = J["M2_mediation"]["ktr_speed_by_position"][pos]
-    eq(f"fig7 retention {pos}", v["mean"], src["ktr_speed_mean"])
-    eq(f"fig7 retention median {pos}", v["median"], src["ktr_speed_median"])
-    eq(f"fig7 retention n {pos}", v["n"], src["n"])
-eq("fig7 ktr_speed partial r", f7["ktr_speed_partial_r"],
+    eq(f"fig6 retention {pos}", v["mean"], src["ktr_speed_mean"])
+    eq(f"fig6 retention median {pos}", v["median"], src["ktr_speed_median"])
+    eq(f"fig6 retention n {pos}", v["n"], src["n"])
+eq("fig6 ktr_speed partial r", f7["ktr_speed_partial_r"],
    J["M2_mediation"]["ktr_speed_partial_r"])
-eq("fig7 mediation decel indirect", f7["mediation_decel"]["indirect"],
+eq("fig6 mediation decel indirect", f7["mediation_decel"]["indirect"],
    J["M2_mediation"]["indirect"])
-eq("fig7 mediation burst indirect", f7["mediation_burst_1s"]["indirect"],
+eq("fig6 mediation burst indirect", f7["mediation_burst_1s"]["indirect"],
    J["M2_mediation"]["burst_1s"]["indirect"])
 
 # --- Tables file: every decimal in the md must match the JSON
@@ -189,9 +189,9 @@ n_figs = 0
 for i in range(1, 8):
     for ext in ("png", "pdf"):
         p = os.path.join(ROOT, "figures", f"fig{i}_" + {
-            1: "double_dissociation", 2: "beyond_stopwatch", 3: "dl_edge_idl",
-            4: "pricing_efficiency", 5: "loco_temporal", 6: "robustness_ladder",
-            7: "ktr_transfer"}[i] + "." + ext)
+            1: "double_dissociation", 2: "beyond_stopwatch", 3: "pricing_efficiency",
+            4: "robustness_ladder", 5: "dl_edge_idl",
+            6: "ktr_transfer", 7: "loco_temporal"}[i] + "." + ext)
         checks += 1
         if not (os.path.exists(p) and os.path.getsize(p) > 0):
             fails.append(f"missing/empty {p}")
