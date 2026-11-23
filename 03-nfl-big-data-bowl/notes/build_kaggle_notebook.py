@@ -30,7 +30,7 @@ nb.metadata = {
     "title": "NFL Big Data Bowl 2027 — Beyond the Stopwatch (reproducible companion)",
 }
 
-MD_TITLE = """# Beyond the Stopwatch: What 10 Hz Combine Tracking Adds — and What It Does Not — to Draft Evaluation
+MD_TITLE = """# Beyond the Stopwatch: What 10 Hz Combine Tracking Adds — and Does Not Add — to Draft Evaluation
 
 **NFL Big Data Bowl 2027 · University Track · Team `dewang2025` (solo)**
 
