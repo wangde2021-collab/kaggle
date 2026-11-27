@@ -1,0 +1,17 @@
+{
+  "submission_bytes": 36397498,
+  "self_play_rewards": [
+    1,
+    -1
+  ],
+  "vs_negamax_p1": {
+    "1": 5
+  },
+  "vs_negamax_p2": {
+    "1": 5
+  },
+  "first_move_s": 0.0001,
+  "p50_s": 0.0002,
+  "p99_s": 0.0744,
+  "max_s": 0.088
+}

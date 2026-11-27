@@ -1,0 +1,23 @@
+{
+  "id": "dewang2025/llm-cls-train-qwen25-3b",
+  "title": "LLM Cls Train Qwen2.5 3B",
+  "code_file": "train_qwen25.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": true,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [],
+  "kernel_sources": [],
+  "competition_sources": [
+    "llm-classification-finetuning"
+  ],
+  "model_sources": [
+    "qwen-lm/qwen2.5/Transformers/3b-instruct/1"
+  ],
+  "machine_shape": "NvidiaTeslaT4"
+}

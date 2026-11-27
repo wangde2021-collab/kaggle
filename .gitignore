@@ -1,0 +1,15 @@
+__pycache__/
+*.pyc
+*.pyo
+*.log
+*.zip
+*.book
+*.pkl
+*.npy
+*.exe
+*.o
+*.out
+.kaggle/
+kaggle.json
+lgbm_model.txt
+05-connectx/outputs/submission.py

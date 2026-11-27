@@ -1,0 +1,18 @@
+{
+  "id": "dewang2025/connectx-compile-solver",
+  "title": "ConnectX Compile Solver",
+  "code_file": "compile_and_verify.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": true,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [],
+  "dataset_sources": [],
+  "kernel_sources": [],
+  "competition_sources": [
+    "connectx"
+  ],
+  "model_sources": []
+}

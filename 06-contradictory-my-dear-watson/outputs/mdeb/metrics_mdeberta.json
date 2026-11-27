@@ -1,0 +1,14 @@
+{
+  "model": "microsoft/mdeberta-v3-base",
+  "completed_folds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "oof_acc_all": 0.8100660066006601,
+  "oof_acc_en": 0.8337700145560407,
+  "oof_acc_non_en": 0.7790476190476191,
+  "elapsed_min": 87.09
+}

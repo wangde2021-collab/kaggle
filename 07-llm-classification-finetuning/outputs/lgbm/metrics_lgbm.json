@@ -1,0 +1,8 @@
+{
+  "val_logloss_orig": 1.01551,
+  "val_logloss_tta": 1.01527,
+  "val_acc_tta": 0.48601,
+  "best_iteration": 387,
+  "n_features": 77,
+  "elapsed_s": 323.4
+}
